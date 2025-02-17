@@ -1,18 +1,18 @@
 buildscript {
     repositories {
-        jcenter()
         maven {
             name = "forge"
-            url = "http://files.minecraftforge.net/maven"
+            url = "https://maven.minecraftforge.net/"
         }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+        classpath('com.anatawa12.forge:ForgeGradle:2.3-1.0.+') {
+            changing = true
+        }
     }
 }
 
 plugins {
-    id "com.matthewprenger.cursegradle" version "1.0.10"
     id "maven-publish"
 }
 
@@ -20,40 +20,41 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 
 def build_number = 'CUSTOM'
 
-if (System.getenv('BUILD_NUMBER') != null)
+if (System.getenv('BUILD_NUMBER') != null) {
     build_number = System.getenv('BUILD_NUMBER')
+}
 
 version = "${waila_version}-B${build_number}_${mc_version}"
-group= "mcp.mobius.waila"
-archivesBaseName = "Hwyla"
+group = "mcp.mobius.waila"
+sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
 
 minecraft {
     version = "${mc_version}-${forge_version}"
     mappings = "${mcp_version}"
     runDir = "run"
-	
+
     replace "@VERSION@", project.waila_version
     replaceIn "Waila.java"
 }
 
 repositories {
-    maven { url "http://dvs1.progwml6.com/files/maven" }
+    maven { url "https://dvs1.progwml6.com/files/maven" }
 }
 
 dependencies {
-    deobfCompile "mezz.jei:jei_1.12.2:4.7.11.102"
+    deobfCompile "mezz.jei:jei_1.12.2:4.16.1.+"
 }
 
-processResources{
+processResources {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
     inputs.property "version", project.version
     inputs.property "mcversion", project.minecraft.version
 
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
-                
-        expand 'version':project.waila_version, 'mcversion':project.minecraft.version
+        expand 'version': project.waila_version, 'mcversion': project.minecraft.version
     }
-	
+
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
     }
@@ -66,8 +67,8 @@ jar {
 }
 
 // API jar
-task apiJar(type: Jar) {
-    classifier = 'api'
+tasks.register('apiJar', Jar) {
+    archiveClassifier.set('api')
     from sourceSets.api.output
 
     // TODO: when FG bug is fixed, remove allJava from the api jar.
@@ -76,20 +77,21 @@ task apiJar(type: Jar) {
     from sourceSets.api.allJava
 }
 
-task sourcesJar(type: Jar) {
-    classifier = 'sources'
+tasks.register('sourcesJar', Jar) {
+    archiveClassifier.set('sources')
     from sourceSets.main.allJava
     from sourceSets.api.allJava
 }
 
-tasks.build.dependsOn apiJar, sourcesJar
+tasks.build.dependsOn tasks.apiJar, tasks.sourcesJar
 
-tasks.withType(JavaCompile) { task ->
+tasks.withType(JavaCompile).configureEach { task ->
     task.options.encoding = 'UTF-8'
 }
 
 publishing {
-    tasks.publish.dependsOn 'build'
+    tasks.publish.dependsOn tasks.build
+
     publications {
         mavenJava(MavenPublication) {
             artifact jar
@@ -97,50 +99,12 @@ publishing {
             artifact apiJar
         }
     }
+
     repositories {
         if (project.hasProperty('maven_repo')) {
             maven { url maven_repo }
         } else {
             mavenLocal()
         }
-    }
-}
-
-String getChangelogText() {
-    def changelogFile = new File('changelog.txt')
-    String str = ''
-    String separator = '---'
-    int lineCount = 0
-    boolean done = false
-    changelogFile.eachLine {
-        if (done || it == null) {
-            return
-        }
-        if (lineCount < 3) {
-            lineCount++
-            if (it.startsWith(separator)) {
-                return
-            }
-        }
-        if (!it.startsWith(separator)) {
-            str += "$it" + (lineCount < 3 ? ':\n\n' : '\n')
-            return
-        }
-        done = true // once we go past the first version block, parse no more
-    }
-    return str
-}
-
-curseforge {
-    if (project.hasProperty('curse_key_TehNut'))
-        apiKey = project.curse_key_TehNut
-
-    project {
-        id = "${curse_id}"
-        changelog = getChangelogText()
-        releaseType = 'release'
-
-        addArtifact sourcesJar
-        addArtifact apiJar
     }
 }
