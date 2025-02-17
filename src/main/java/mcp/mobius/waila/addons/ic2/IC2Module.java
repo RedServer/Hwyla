@@ -8,35 +8,34 @@ import mcp.mobius.waila.api.WailaPlugin;
 import java.lang.reflect.Field;
 
 @WailaPlugin
-public class IC2Module implements IWailaPlugin{
+public class IC2Module implements IWailaPlugin {
 
-    public static Class TileBaseGenerator = null;
-    public static Field TileBaseGenerator_storage = null;
-    public static Field TileBaseGenerator_maxStorage = null;
-    public static Field TileBaseGenerator_production = null;
+    public static Class generator = null;
+    public static Field generatorStorage = null;
+    public static Field generatorMaxStorage = null;
+    public static Field generatorProduction = null;
 
 
     @Override
     public void register(IWailaRegistrar registrar) {
-
         try {
-            TileBaseGenerator = Class.forName("ic2.core.block.base.tile.TileEntityGeneratorBase");
-            TileBaseGenerator_storage = TileBaseGenerator.getDeclaredField("storage");
-            TileBaseGenerator_maxStorage = TileBaseGenerator.getDeclaredField("maxStorage");
-            TileBaseGenerator_production = TileBaseGenerator.getDeclaredField("production");
+            generator = Class.forName("ic2.core.block.base.tile.TileEntityGeneratorBase");
+            generatorStorage = generator.getDeclaredField("storage");
+            generatorMaxStorage = generator.getDeclaredField("maxStorage");
+            generatorProduction = generator.getDeclaredField("production");
 
 
-            registrar.registerBodyProvider(HUDHandlerTEGenerator.INSTANCE, TileBaseGenerator);
-            registrar.registerNBTProvider(HUDHandlerTEGenerator.INSTANCE, TileBaseGenerator);
+            registrar.registerBodyProvider(HUDHandlerTEGenerator.INSTANCE, generator);
+            registrar.registerNBTProvider(HUDHandlerTEGenerator.INSTANCE, generator);
 
             registrar.addConfig("Industrial Craft 2", "ic2.storage", true);
             registrar.addConfig("Industrial Craft 2", "ic2.outputeu", true);
 
         } catch (Exception e) {
-            if (e instanceof ClassNotFoundException || e instanceof NoSuchFieldException) {
+            if (e instanceof ClassNotFoundException) {
                 Waila.LOGGER.info("[Industrial Craft 2] IndustrialCraft 2 mod not found.");
             } else {
-                Waila.LOGGER.warn("[Industrial Craft 2] Error while loading generator hooks." + e);
+                Waila.LOGGER.warn("[Industrial Craft 2] Error while loading generator hooks. {}", e);
             }
         }
     }

@@ -4,6 +4,7 @@ import mcp.mobius.waila.api.ITaggedList;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 import mcp.mobius.waila.api.IWailaDataProvider;
+import mcp.mobius.waila.cbcore.LangUtil;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -25,6 +26,9 @@ public class HUDHandlerTEGenerator implements IWailaDataProvider {
         int production = accessor.getNBTData().getInteger("production");
         long maxStorage = accessor.getNBTData().getLong("maxStorage");
 
+        String storedStr = LangUtil.translateG("hud.ic2.msg.stored");
+        String outputStr = LangUtil.translateG("hud.ic2.msg.output");
+
         if (accessor.getTileEntity() == null) {
             return currenttip;
         }
@@ -35,14 +39,14 @@ public class HUDHandlerTEGenerator implements IWailaDataProvider {
                 ((ITaggedList<String, String>) currenttip)
                         .add(String.format(
                                 "%s \u00a7f%d\u00a7r / \u00a7f%d\u00a7r EU",
-                                "STORED",
+                                storedStr,
                                 Math.round(Math.min(storage, maxStorage)),
                                 maxStorage
                         ), "IEnergyStorage");
             }
 
         if (config.getConfig("ic2.outputeu")) {
-            currenttip.add(String.format("%s §f%d §r EU/t", "OUTPUT", production));
+            currenttip.add(String.format("%s \u00a7f%d \u00a7r EU/t", outputStr, production));
         }
 
         return currenttip;
@@ -55,17 +59,16 @@ public class HUDHandlerTEGenerator implements IWailaDataProvider {
         double storage = -1;
         int production = -1;
         long maxStorage = -1;
-        try {
-            if (IC2Module.TileBaseGenerator.isInstance(te)) {
-                storage = IC2Module.TileBaseGenerator_storage.getDouble(te);
-                production = IC2Module.TileBaseGenerator_production.getInt(te);
-                maxStorage = IC2Module.TileBaseGenerator_maxStorage.getLong(te);
-            }
 
+        try {
+            if (IC2Module.generator.isInstance(te)) {
+                storage = IC2Module.generatorStorage.getDouble(te);
+                production = IC2Module.generatorProduction.getInt(te);
+                maxStorage = IC2Module.generatorMaxStorage.getLong(te);
+            }
         } catch (java.lang.Exception e) {
             throw new RuntimeException(e);
         }
-
         tag.setDouble("storage", storage);
         tag.setInteger("production", production);
         tag.setLong("maxStorage", maxStorage);

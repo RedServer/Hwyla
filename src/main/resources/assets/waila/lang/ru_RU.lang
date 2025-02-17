@@ -65,6 +65,12 @@ hud.msg.offers=Предложения
 hud.msg.demands=Запросы
 hud.msg.career=Карьера: %s
 
+hud.ic2.msg.stored=Хранится
+hud.ic2.msg.output=Вывод
+
+hud.te.msg.stored=Хранится
+hud.te.msg.capacity=Объём
+
 hud.item.melonstem=Стебель дыни
 hud.item.pumpkinstem=Стебель арбуза
 
