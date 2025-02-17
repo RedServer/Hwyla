@@ -4,6 +4,7 @@ import mcp.mobius.waila.Waila;
 import mcp.mobius.waila.api.IWailaPlugin;
 import mcp.mobius.waila.api.IWailaRegistrar;
 import mcp.mobius.waila.api.WailaPlugin;
+import net.minecraftforge.fml.common.Loader;
 
 import java.lang.reflect.Field;
 
@@ -18,6 +19,7 @@ public class IC2Module implements IWailaPlugin {
 
     @Override
     public void register(IWailaRegistrar registrar) {
+        if (!Loader.isModLoaded("ic2")) return;
         try {
             generator = Class.forName("ic2.core.block.base.tile.TileEntityGeneratorBase");
             generatorStorage = generator.getDeclaredField("storage");
@@ -32,11 +34,7 @@ public class IC2Module implements IWailaPlugin {
             registrar.addConfig("Industrial Craft 2", "ic2.outputeu", true);
 
         } catch (Exception e) {
-            if (e instanceof ClassNotFoundException) {
-                Waila.LOGGER.info("[Industrial Craft 2] IndustrialCraft 2 mod not found.");
-            } else {
-                Waila.LOGGER.warn("[Industrial Craft 2] Error while loading generator hooks. {}", e);
-            }
+            Waila.LOGGER.warn("[Industrial Craft 2] Error while loading generator hooks. {}", e);
         }
     }
 }
