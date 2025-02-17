@@ -65,6 +65,12 @@ hud.msg.offers=Offers
 hud.msg.demands=Demands
 hud.msg.career=Career: %s
 
+hud.ic2.msg.stored=Stored
+hud.ic2.msg.output=Output
+
+hud.te.msg.stored=Stored
+hud.te.msg.capacity=Capacity
+
 hud.item.melonstem=Melon Stem
 hud.item.pumpkinstem=Pumpkin Stem
 
