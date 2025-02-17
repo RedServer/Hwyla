@@ -67,6 +67,7 @@ hud.msg.career=Career: %s
 
 hud.ic2.msg.stored=Stored
 hud.ic2.msg.output=Output
+hud.ic2.msg.tier=Tier
 
 hud.te.msg.stored=Stored
 hud.te.msg.capacity=Capacity
@@ -92,5 +93,10 @@ option.general.showcrop=Show crop growth
 option.general.registry=Show registry data
 option.capability.tankinfo=Show tank data
 option.capability.energyinfo=Show energy data
+
+option.ic2.storage=Show EU storage
+option.ic2.percentage=Show EU percent
+option.ic2.outputeu=Show Output EU
+option.ic2.tier=Show Tier of Electricity
 
 nei.options.keys.showenchant=Show enchanting values

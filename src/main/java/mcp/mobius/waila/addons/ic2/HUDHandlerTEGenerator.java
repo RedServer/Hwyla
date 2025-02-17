@@ -22,32 +22,43 @@ public class HUDHandlerTEGenerator implements IWailaDataProvider {
     @Nonnull
     @Override
     public List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
-        double storage = accessor.getNBTData().getDouble("storage");
-        int production = accessor.getNBTData().getInteger("production");
-        long maxStorage = accessor.getNBTData().getLong("maxStorage");
+        if (accessor.getTileEntity() == null)
+            return currenttip;
+
+        double stored = accessor.getNBTData().getDouble("stored");
+        int output = accessor.getNBTData().getInteger("output");
+        long capacity = accessor.getNBTData().getLong("capacity");
+        int tier = accessor.getNBTData().getInteger("tier");
 
         String storedStr = LangUtil.translateG("hud.ic2.msg.stored");
         String outputStr = LangUtil.translateG("hud.ic2.msg.output");
+        String tierStr = LangUtil.translateG("hud.ic2.msg.tier");
+        String energyLine = "";
 
-        if (accessor.getTileEntity() == null) {
-            return currenttip;
+        /* EU Storage*/
+        if (capacity > 0) {
+            if (config.getConfig("ic2.storage"))
+                energyLine += String.format(
+                        "%s: §f%d§r / §f%d§r EU",
+                        storedStr,
+                        Math.round(Math.min(stored, capacity)),
+                        capacity
+                );
+
+            if (config.getConfig("ic2.percentage"))
+                energyLine += String.format(" (§f%d%%§r)", Math.round((stored / capacity) * 100));
+
+            ((ITaggedList<String, String>) currenttip).add(energyLine, "IEnergyStorage");
         }
 
-        /* EU Storage */
-        if (config.getConfig("ic2.storage"))
-            if (maxStorage > 0) {
-                ((ITaggedList<String, String>) currenttip)
-                        .add(String.format(
-                                "%s §f%d§r / §f%d§r EU",
-                                storedStr,
-                                Math.round(Math.min(storage, maxStorage)),
-                                maxStorage
-                        ), "IEnergyStorage");
-            }
+        /* Output EU */
+        if (config.getConfig("ic2.outputeu") && output > 0)
+            currenttip.add(String.format("%s: §f%d §r EU/t", outputStr, output));
 
-        if (config.getConfig("ic2.outputeu")) {
-            currenttip.add(String.format("%s §f%d §r EU/t", outputStr, production));
-        }
+        /* Tier */
+        if (config.getConfig("ic2.tier") && tier > 0)
+            currenttip.add(String.format("%s: §f%d §r", tierStr, tier));
+
 
         return currenttip;
     }
@@ -56,22 +67,30 @@ public class HUDHandlerTEGenerator implements IWailaDataProvider {
     @Nonnull
     @Override
     public NBTTagCompound getNBTData(EntityPlayerMP player, TileEntity te, NBTTagCompound tag, World world, BlockPos pos) {
-        double storage = -1;
-        int production = -1;
-        long maxStorage = -1;
+        double stored = -1;
+        int output = -1;
+        long capacity = -1;
+        int tier = 0;
 
         try {
             if (IC2Module.generator.isInstance(te)) {
-                storage = IC2Module.generatorStorage.getDouble(te);
-                production = IC2Module.generatorProduction.getInt(te);
-                maxStorage = IC2Module.generatorMaxStorage.getLong(te);
+                stored = IC2Module.generatorStored.getDouble(te);
+                output = IC2Module.generatorOutput.getInt(te);
+                capacity = IC2Module.generatorCapacity.getLong(te);
+                tier = IC2Module.generatorTier.getInt(te);
+            } else if (IC2Module.eBlock.isInstance(te)) {
+                stored = IC2Module.eBlockStored.getDouble(te);
+                output = IC2Module.eBlockOutput.getInt(te);
+                capacity = IC2Module.eBlockCapacity.getLong(te);
+                tier = IC2Module.eBlockTier.getInt(te);
             }
         } catch (java.lang.Exception e) {
             throw new RuntimeException(e);
         }
-        tag.setDouble("storage", storage);
-        tag.setInteger("production", production);
-        tag.setLong("maxStorage", maxStorage);
+        tag.setDouble("stored", stored);
+        tag.setInteger("output", output);
+        tag.setLong("capacity", capacity);
+        tag.setInteger("tier", tier);
 
         return tag;
     }
