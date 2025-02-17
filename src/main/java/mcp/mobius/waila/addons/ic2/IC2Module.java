@@ -34,7 +34,7 @@ public class IC2Module implements IWailaPlugin {
             registrar.addConfig("Industrial Craft 2", "ic2.outputeu", true);
 
         } catch (Exception e) {
-            Waila.LOGGER.warn("[Industrial Craft 2] Error while loading generator hooks. {}", e);
+            Waila.LOGGER.warn("[Industrial Craft 2] Error while loading generator hooks.", e);
         }
     }
 }

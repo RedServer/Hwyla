@@ -36,10 +36,9 @@ public class HUDHandlerCache implements IWailaDataProvider {
 
             String name = currenttip.get(0);
             String color = "";
-            if (name.startsWith("\u00a7")) color = name.substring(0, 2);
+            if (name.startsWith("§")) color = name.substring(0, 2);
 
             if (storedItem != null) {
-                ;
                 name += String.format(color + " < %s >", storedItem.getDisplayName());
             } else name += " " + "EMPTY";
 

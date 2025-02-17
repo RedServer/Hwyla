@@ -34,7 +34,7 @@ public class ThermalExpansionModule implements IWailaPlugin {
 
             registrar.addConfig("Thermal Expansion", "thermalexpansion.cache");
         } catch (Exception e) {
-            Waila.LOGGER.warn("[Thermal Expansion] Error while loading store cache hooks. {}", e);
+            Waila.LOGGER.warn("[Thermal Expansion] Error while loading store cache hooks.", e);
         }
     }
 }

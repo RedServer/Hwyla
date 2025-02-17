@@ -38,7 +38,7 @@ public class HUDHandlerTEGenerator implements IWailaDataProvider {
             if (maxStorage > 0) {
                 ((ITaggedList<String, String>) currenttip)
                         .add(String.format(
-                                "%s \u00a7f%d\u00a7r / \u00a7f%d\u00a7r EU",
+                                "%s §f%d§r / §f%d§r EU",
                                 storedStr,
                                 Math.round(Math.min(storage, maxStorage)),
                                 maxStorage
@@ -46,7 +46,7 @@ public class HUDHandlerTEGenerator implements IWailaDataProvider {
             }
 
         if (config.getConfig("ic2.outputeu")) {
-            currenttip.add(String.format("%s \u00a7f%d \u00a7r EU/t", outputStr, production));
+            currenttip.add(String.format("%s §f%d §r EU/t", outputStr, production));
         }
 
         return currenttip;

@@ -1,0 +1,90 @@
+screen.button.waila=Waila
+screen.button.modules=Module
+screen.label.scale=Maße
+screen.label.dragtuto=Verschiebe das HUD, um seine Position zu ändern.
+
+screen.button.default=Standard
+screen.button.cancel=Abbrechen
+screen.button.ok=Ok
+screen.button.yes=Ja
+screen.button.no=Nein
+screen.button.back=Zurück
+screen.button.hidden=Versteckt
+screen.button.visible=Sichtbar
+screen.button.maintained=Gewartet
+screen.button.toggled=An/Aus
+screen.hwyla.warning=§cWarnung:§r Du verwendest eine Abspaltung(fork) von Waila, auch genannt Hwyla. Du kannst die (zum größtenteils fertige) Liste der Änderungen sehen, wenn du auf die Schaltfläche oben links in diesem Fenster klickst.
+
+choice.showhidewaila=Zeige/Verstecke Waila
+choice.showhideidmeta=Zeige ID:Metadaten
+choice.toggledmaintained=An/Aus/Gewartet
+choice.showliquids=Flüssigkeiten
+choice.shifttoggledblock=Blöcke schleichend umschalten
+choice.shifttoggledents=Lebewesen schleichend umschalten
+choice.hidefromlist=Verstecken vor der Spielerliste
+choice.hidefromdebug=Verstecken vor dem Debug-Menü
+choice.showitem=Gegenstand anzeigen
+choice.tts=Blöcke vorlesen
+choice.format.modname=Modname
+choice.format.blockname=Blockname
+choice.format.fluidname=Flüssigkeitsname
+choice.format.entityname=Wesensname
+choice.format.metadata=Metadaten
+choice.format.background=Hintergrundfarbe
+choice.format.gradienttop=Verlaufsfarbe (Oben)
+choice.format.gradientbottom=Verlaufsfarbe (Unten)
+choice.format.font=Textfarbe
+screen.button.configureaspect=Konfiguriere Aspekt...
+screen.button.configureformat=Formatiere Inhalt...
+screen.button.exporttheme=Exportiere Thema
+
+waila.keybind.wailaconfig=Einstellungsbildschirm
+waila.keybind.wailadisplay=Einblenden/Ausblenden
+waila.keybind.liquid=Zeige Flüssigkeiten
+waila.keybind.recipe=Zeige Rezept
+waila.keybind.usage=Zeige Verwendung
+
+client.msg.norecipe=Kein Rezept gefunden.
+client.msg.nousage=Keine Verwendung gefunden.
+
+hud.msg.empty=<Leer>
+hud.msg.health=Gesundheit
+hud.msg.growth=Entwicklung
+hud.msg.growth.value=%.0f %%
+hud.msg.mature=Ausgereift
+hud.msg.off=Aus
+hud.msg.on=An
+hud.msg.state=Status
+hud.msg.delay=Verzögerung
+hud.msg.comparator=Vergleicher
+hud.msg.substractor=Substraktor
+hud.msg.record=Aufzeichnung
+hud.msg.toomuch=Zu viele...
+hud.msg.power=Energie
+hud.msg.offers=Angebote
+hud.msg.demands=Anforderungen
+hud.msg.career=Karriere: %s
+
+hud.item.melonstem=Melonenpflanze
+hud.item.pumpkinstem=Kürbispflanze
+
+cfg.theme.vanilla=Vanilla
+cfg.theme.dark=Dunkel
+
+option.vanilla.spawntype=Spawner-Typ
+option.vanilla.growthvalue=Wachstumswert
+option.vanilla.leverstate=Hebelstatus
+option.vanilla.repeater=Repeater-Verzögerung
+option.vanilla.comparator=Komparatormodus
+option.vanilla.redstone=Redstone-Stärke
+option.vanilla.jukebox=Plattenspieler-Schallplatte
+option.vanilla.silverfish=Silberfisch verdecken
+option.vanilla.furnacedisplay=Zeige Fortschritt des Ofens
+option.general.showents=Zeige Wesen
+option.general.showhp=Zeige Gesundheit von Lebewesen
+option.general.showcrop=Zeige Pflanzenwachstum
+option.general.registry=Zeige Registrierungsdaten
+option.capability.tankinfo=Zeige Tankdaten
+option.capability.energyinfo=Zeige Energiedaten
+
+nei.options.keys.showenchant=Zeige die Verzauberungs-Werte
