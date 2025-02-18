@@ -1,5 +1,6 @@
 package mcp.mobius.waila.addons.ic2;
 
+import mcp.mobius.waila.Waila;
 import mcp.mobius.waila.api.ITaggedList;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
@@ -26,11 +27,13 @@ public class HUDHandlerTEGenerator implements IWailaDataProvider {
             return currenttip;
 
         double stored = accessor.getNBTData().getDouble("stored");
+        int input = accessor.getNBTData().getInteger("input");
         int output = accessor.getNBTData().getInteger("output");
         long capacity = accessor.getNBTData().getLong("capacity");
         int tier = accessor.getNBTData().getInteger("tier");
 
         String storedStr = LangUtil.translateG("hud.ic2.msg.stored");
+        String inputStr = LangUtil.translateG("hud.ic2.msg.input");
         String outputStr = LangUtil.translateG("hud.ic2.msg.output");
         String tierStr = LangUtil.translateG("hud.ic2.msg.tier");
         String energyLine = "";
@@ -51,9 +54,13 @@ public class HUDHandlerTEGenerator implements IWailaDataProvider {
             ((ITaggedList<String, String>) currenttip).add(energyLine, "IEnergyStorage");
         }
 
-        /* Output EU */
-        if (config.getConfig("ic2.outputeu") && output > 0)
-            currenttip.add(String.format("%s: §f%d §r EU/t", outputStr, output));
+        /* Input/Output EU */
+        if (config.getConfig("ic2.inouteu")) {
+            if (input > 0)
+                currenttip.add(String.format("%s: §f%d §r EU/t", inputStr, input));
+            if (output > 0)
+                currenttip.add(String.format("%s: §f%d §r EU/t", outputStr, output));
+        }
 
         /* Tier */
         if (config.getConfig("ic2.tier") && tier > 0)
@@ -63,33 +70,41 @@ public class HUDHandlerTEGenerator implements IWailaDataProvider {
         return currenttip;
     }
 
-
     @Nonnull
     @Override
     public NBTTagCompound getNBTData(EntityPlayerMP player, TileEntity te, NBTTagCompound tag, World world, BlockPos pos) {
-        double stored = -1;
-        int output = -1;
-        long capacity = -1;
+        double stored = 0;
+        long capacity = 0;
+        int input = 0;
+        int output = 0;
         int tier = 0;
 
         try {
             if (IC2Module.generator.isInstance(te)) {
                 stored = IC2Module.generatorStored.getDouble(te);
-                output = IC2Module.generatorOutput.getInt(te);
                 capacity = IC2Module.generatorCapacity.getLong(te);
+                output = IC2Module.generatorOutput.getInt(te);
                 tier = IC2Module.generatorTier.getInt(te);
+
             } else if (IC2Module.eBlock.isInstance(te)) {
                 stored = IC2Module.eBlockStored.getDouble(te);
-                output = IC2Module.eBlockOutput.getInt(te);
                 capacity = IC2Module.eBlockCapacity.getLong(te);
+                output = IC2Module.eBlockOutput.getInt(te);
                 tier = IC2Module.eBlockTier.getInt(te);
+
+            } else if (IC2Module.eMachine.isInstance(te)) {
+                input = IC2Module.eMachineInput.getInt(te);
+                tier = IC2Module.eMachineTier.getInt(te);
             }
+            
         } catch (java.lang.Exception e) {
             throw new RuntimeException(e);
         }
+
         tag.setDouble("stored", stored);
-        tag.setInteger("output", output);
         tag.setLong("capacity", capacity);
+        tag.setInteger("input", input);
+        tag.setInteger("output", output);
         tag.setInteger("tier", tier);
 
         return tag;

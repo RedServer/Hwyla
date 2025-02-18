@@ -66,6 +66,7 @@ hud.msg.demands=Запросы
 hud.msg.career=Карьера: %s
 
 hud.ic2.msg.stored=Хранится
+hud.ic2.msg.input=Вход
 hud.ic2.msg.output=Выход
 hud.ic2.msg.tier=Энергоуровень
 
@@ -96,7 +97,7 @@ option.capability.energyinfo=Показать данные энергии
 
 option.ic2.storage=Заряд EU
 option.ic2.percentage=EU в процентах 
-option.ic2.outputeu=Макс. выход EU
+option.ic2.inouteu=Макс. вход/выход EU
 option.ic2.tier=Энергоуровень
 
 nei.options.keys.showenchant=Показать параметры зачарования

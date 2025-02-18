@@ -66,6 +66,7 @@ hud.msg.demands=Demands
 hud.msg.career=Career: %s
 
 hud.ic2.msg.stored=Stored
+hud.ic2.msg.input=Input
 hud.ic2.msg.output=Output
 hud.ic2.msg.tier=Tier
 
@@ -95,8 +96,8 @@ option.capability.tankinfo=Show tank data
 option.capability.energyinfo=Show energy data
 
 option.ic2.storage=Show EU storage
-option.ic2.percentage=Show EU percent
-option.ic2.outputeu=Show Output EU
-option.ic2.tier=Show Tier of Electricity
+option.ic2.percentage=EU percentage
+option.ic2.inouteu=Input/Output EU
+option.ic2.tier=Energy tier
 
 nei.options.keys.showenchant=Show enchanting values
