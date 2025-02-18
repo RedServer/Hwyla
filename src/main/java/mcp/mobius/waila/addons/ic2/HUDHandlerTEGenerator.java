@@ -1,6 +1,5 @@
 package mcp.mobius.waila.addons.ic2;
 
-import mcp.mobius.waila.Waila;
 import mcp.mobius.waila.api.ITaggedList;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
@@ -96,7 +95,7 @@ public class HUDHandlerTEGenerator implements IWailaDataProvider {
                 input = IC2Module.eMachineInput.getInt(te);
                 tier = IC2Module.eMachineTier.getInt(te);
             }
-            
+
         } catch (java.lang.Exception e) {
             throw new RuntimeException(e);
         }
