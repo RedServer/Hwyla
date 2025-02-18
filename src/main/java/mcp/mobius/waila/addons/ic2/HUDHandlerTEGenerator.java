@@ -1,5 +1,6 @@
 package mcp.mobius.waila.addons.ic2;
 
+import mcp.mobius.waila.Waila;
 import mcp.mobius.waila.api.ITaggedList;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;

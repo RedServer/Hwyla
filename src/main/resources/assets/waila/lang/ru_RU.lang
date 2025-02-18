@@ -70,6 +70,25 @@ hud.ic2.msg.input=Вход
 hud.ic2.msg.output=Выход
 hud.ic2.msg.tier=Энергоуровень
 
+hud.ic2.msg.growthtitile=Рост
+hud.ic2.msg.currentsize=Этап
+hud.ic2.msg.growthpoints=Очки
+
+hud.ic2.msg.stattitle=Параметры
+hud.ic2.msg.statgrowth=Рост
+hud.ic2.msg.statgain=Прирост
+hud.ic2.msg.statresistance=Сопротивление
+
+hud.ic2.msg.storagetitle=Хранилище
+hud.ic2.msg.storagenutrients=Удобрение
+hud.ic2.msg.storagewater=Вода
+hud.ic2.msg.storageweedex=Средство от сорняков
+hud.ic2.msg.terrraintitle=Окружающая среда
+hud.ic2.msg.terrainnutrients=Питательные вещества
+hud.ic2.msg.terrainhumidity=Влажность
+hud.ic2.msg.terrainairquality=Качество окружения
+hud.ic2.msg.lightlevel=Уровень освещенности
+
 hud.te.msg.stored=Хранится
 hud.te.msg.capacity=Объём
 

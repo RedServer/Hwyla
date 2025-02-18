@@ -70,6 +70,25 @@ hud.ic2.msg.input=Input
 hud.ic2.msg.output=Output
 hud.ic2.msg.tier=Tier
 
+hud.ic2.msg.growthtitile=Growth
+hud.ic2.msg.currentsize=Stage
+hud.ic2.msg.growthpoints=Points
+
+hud.ic2.msg.stattitle=Stats
+hud.ic2.msg.statgrowth=Growth
+hud.ic2.msg.statgain=Gain
+hud.ic2.msg.statresistance=Resistance
+
+hud.ic2.msg.storagetitle=Storage
+hud.ic2.msg.storagenutrients=Nutrients
+hud.ic2.msg.storagewater=Water
+hud.ic2.msg.storageweedex=WeedEX
+hud.ic2.msg.terrraintitle=Terrain
+hud.ic2.msg.terrainnutrients=Nutrients
+hud.ic2.msg.terrainhumidity=Humidity
+hud.ic2.msg.terrainairquality=Air Quality
+hud.ic2.msg.lightlevel=Light Level
+
 hud.te.msg.stored=Stored
 hud.te.msg.capacity=Capacity
 
