@@ -17,10 +17,10 @@ import org.apache.logging.log4j.Logger;
 import javax.annotation.Nonnull;
 import java.util.List;
 
-public class HUDHandlerTEGenerator implements IWailaDataProvider {
+public class HUDHandlerMachines implements IWailaDataProvider {
 
     private static final Logger LOGGER = LogManager.getLogger();
-    static final IWailaDataProvider INSTANCE = new HUDHandlerTEGenerator();
+    static final IWailaDataProvider INSTANCE = new HUDHandlerMachines();
 
     private static final String ENERGY_STORAGE_FORMAT = "%s: §f%d§r / §f%d§r EU";
     private static final String PERCENTAGE_FORMAT = " (§f%d%%§r)";

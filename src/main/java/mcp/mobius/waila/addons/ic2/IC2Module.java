@@ -56,8 +56,8 @@ public class IC2Module implements IWailaPlugin {
             generatorOutput = generator.getDeclaredField("production");
             generatorTier = generator.getDeclaredField("tier");
 
-            registrar.registerBodyProvider(HUDHandlerTEGenerator.INSTANCE, generator);
-            registrar.registerNBTProvider(HUDHandlerTEGenerator.INSTANCE, generator);
+            registrar.registerBodyProvider(HUDHandlerMachines.INSTANCE, generator);
+            registrar.registerNBTProvider(HUDHandlerMachines.INSTANCE, generator);
 
             /* EU Storages */
             eBlock = Class.forName("ic2.core.block.base.tile.TileEntityElectricBlock");
@@ -66,20 +66,18 @@ public class IC2Module implements IWailaPlugin {
             eBlockOutput = eBlock.getDeclaredField("output");
             eBlockTier = eBlock.getDeclaredField("tier");
 
-            registrar.registerBodyProvider(HUDHandlerTEGenerator.INSTANCE, eBlock);
-            registrar.registerNBTProvider(HUDHandlerTEGenerator.INSTANCE, eBlock);
+            registrar.registerBodyProvider(HUDHandlerMachines.INSTANCE, eBlock);
+            registrar.registerNBTProvider(HUDHandlerMachines.INSTANCE, eBlock);
 
             /* Machines */
             eMachine = Class.forName("ic2.core.block.base.tile.TileEntityElecMachine");
-            // TODO: Вырезать или оставить
-            // stored и capacity понадобятся в будущем... Или нет
             eMachineStored = eMachine.getDeclaredField("energy");
             eMachineCapacity = eMachine.getDeclaredField("maxEnergy");
             eMachineInput = eMachine.getDeclaredField("maxInput");
             eMachineTier = eMachine.getDeclaredField("tier");
 
-            registrar.registerBodyProvider(HUDHandlerTEGenerator.INSTANCE, eMachine);
-            registrar.registerNBTProvider(HUDHandlerTEGenerator.INSTANCE, eMachine);
+            registrar.registerBodyProvider(HUDHandlerMachines.INSTANCE, eMachine);
+            registrar.registerNBTProvider(HUDHandlerMachines.INSTANCE, eMachine);
 
             /* Crops */
             crops = Class.forName("ic2.core.block.crop.TileEntityCrop");
