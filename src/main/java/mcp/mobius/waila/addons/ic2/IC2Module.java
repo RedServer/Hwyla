@@ -12,104 +12,141 @@ import java.lang.reflect.Method;
 @WailaPlugin
 public class IC2Module implements IWailaPlugin {
 
-    public static Class generator = null;
-    public static Field generatorStored = null;
-    public static Field generatorCapacity = null;
-    public static Field generatorOutput = null;
-    public static Field generatorTier = null;
+    protected static Class<?>
+            TileEntityGeneratorBase,
+            TileEntityElectricBlock,
+            TileEntityElecMachine,
+            TileEntityCrop,
+            CropCard,
+            ICropTile,
+            Ic2Crops;
 
-    public static Class eBlock = null;
-    public static Field eBlockStored = null;
-    public static Field eBlockCapacity = null;
-    public static Field eBlockOutput = null;
-    public static Field eBlockTier = null;
+    protected static Field
+            generatorStored,
+            generatorCapacity,
+            generatorOutput,
+            generatorTier,
+            eBlockStored,
+            eBlockCapacity,
+            eBlockOutput,
+            eBlockTier,
+            eMachineStored,
+            eMachineCapacity,
+            eMachineInput,
+            eMachineTier,
+            ic2cropsInstance;
 
-    public static Class eMachine = null;
-    public static Field eMachineStored = null;
-    public static Field eMachineCapacity = null;
-    public static Field eMachineInput = null;
-    public static Field eMachineTier = null;
+    protected static Method
+            ic2cropsDisplayItem,
+            cCardMaxSize,
+            cCardMaxPoints,
+            teCropGetCropCard,
+            teCropStorageNutrients,
+            teCropStorageWater,
+            teCropStorageWeedEX,
+            teCropTerrainNutrients,
+            teCropTerrainHumidity,
+            teCropTerrainAirQuality,
+            teCropLightLevel,
+            teCropScanLevel,
+            teCropCurrentSize,
+            teCropGrowthPoints,
+            teCropStatGrowth,
+            teCropStatGain,
+            teCropStatResistance;
 
-    public static Class crops = null;
-    public static Method cropsStorageNutrients = null;
-    public static Method cropsStorageWater = null;
-    public static Method cropsStorageWeedEX = null;
-    public static Method cropsTerrainNutrients = null;
-    public static Method cropsTerrainHumidity = null;
-    public static Method cropsTerrainAirQuality = null;
-    public static Method cropsLightLevel = null;
-    public static Method cropsScanLevel = null;
-    public static Method cropsCurrentSize = null;
-    public static Method cropsGrowthPoints = null;
-    public static Method cropsStatGrowth = null;
-    public static Method cropsStatGain = null;
-    public static Method cropsStatResistance = null;
+
+    private IWailaRegistrar registrar;
 
     @Override
     public void register(IWailaRegistrar registrar) {
         if (!Loader.isModLoaded("ic2")) return;
+        this.registrar = registrar;
+
         try {
-            /* Generators */
-            generator = Class.forName("ic2.core.block.base.tile.TileEntityGeneratorBase");
-            generatorStored = generator.getDeclaredField("storage");
-            generatorCapacity = generator.getDeclaredField("maxStorage");
-            generatorOutput = generator.getDeclaredField("production");
-            generatorTier = generator.getDeclaredField("tier");
-
-            registrar.registerBodyProvider(HUDHandlerTEGenerator.INSTANCE, generator);
-            registrar.registerNBTProvider(HUDHandlerTEGenerator.INSTANCE, generator);
-
-            /* EU Storages */
-            eBlock = Class.forName("ic2.core.block.base.tile.TileEntityElectricBlock");
-            eBlockStored = eBlock.getDeclaredField("energy");
-            eBlockCapacity = eBlock.getDeclaredField("maxEnergy");
-            eBlockOutput = eBlock.getDeclaredField("output");
-            eBlockTier = eBlock.getDeclaredField("tier");
-
-            registrar.registerBodyProvider(HUDHandlerTEGenerator.INSTANCE, eBlock);
-            registrar.registerNBTProvider(HUDHandlerTEGenerator.INSTANCE, eBlock);
-
-            /* Machines */
-            eMachine = Class.forName("ic2.core.block.base.tile.TileEntityElecMachine");
-            // TODO: Вырезать или оставить
-            // stored и capacity понадобятся в будущем... Или нет
-            eMachineStored = eMachine.getDeclaredField("energy");
-            eMachineCapacity = eMachine.getDeclaredField("maxEnergy");
-            eMachineInput = eMachine.getDeclaredField("maxInput");
-            eMachineTier = eMachine.getDeclaredField("tier");
-
-            registrar.registerBodyProvider(HUDHandlerTEGenerator.INSTANCE, eMachine);
-            registrar.registerNBTProvider(HUDHandlerTEGenerator.INSTANCE, eMachine);
-
-            /* Crops */
-            crops = Class.forName("ic2.core.block.crop.TileEntityCrop");
-
-            cropsStorageNutrients = crops.getDeclaredMethod("getStorageNutrients");
-            cropsStorageWater = crops.getDeclaredMethod("getStorageWater");
-            cropsStorageWeedEX = crops.getDeclaredMethod("getStorageWeedEX");
-            cropsTerrainNutrients = crops.getDeclaredMethod("getTerrainNutrients");
-            cropsTerrainHumidity = crops.getDeclaredMethod("getTerrainHumidity");
-            cropsTerrainAirQuality = crops.getDeclaredMethod("getTerrainAirQuality");
-            cropsLightLevel = crops.getDeclaredMethod("getLightLevel");
-            cropsScanLevel = crops.getDeclaredMethod("getScanLevel");
-            cropsCurrentSize = crops.getDeclaredMethod("getCurrentSize");
-            cropsGrowthPoints = crops.getDeclaredMethod("getGrowthPoints");
-            cropsStatGrowth = crops.getDeclaredMethod("getStatGrowth");
-            cropsStatGain = crops.getDeclaredMethod("getStatGain");
-            cropsStatResistance = crops.getDeclaredMethod("getStatResistance");
-
-            registrar.registerBodyProvider(HUDHandlerCrops.INSTANCE, crops);
-            registrar.registerNBTProvider(HUDHandlerCrops.INSTANCE, crops);
-
-            /* Config */
-            registrar.addConfig("Industrial Craft 2", "ic2.storage", true);
-            registrar.addConfig("Industrial Craft 2", "ic2.percentage", true);
-            registrar.addConfig("Industrial Craft 2", "ic2.inouteu", true);
-            registrar.addConfig("Industrial Craft 2", "ic2.tier", true);
-            registrar.addConfig("Industrial Craft 2", "ic2.crops", true);
-
+            registerGenerators();
+            registerEUStorages();
+            registerMachines();
+            registerCrops();
+            registerConfigs();
         } catch (Exception e) {
-            Waila.LOGGER.warn("[Industrial Craft 2] Error while loading generator hooks.", e);
+            Waila.LOGGER.warn("[Industrial Craft 2] Error while loading hooks.", e);
         }
+
+    }
+
+    private void registerCrops() throws Exception {
+        TileEntityCrop = Class.forName("ic2.core.block.crop.TileEntityCrop");
+        CropCard = Class.forName("ic2.api.crops.CropCard");
+        ICropTile = Class.forName("ic2.api.crops.ICropTile");
+        Ic2Crops = Class.forName("ic2.core.block.crop.Ic2Crops");
+
+        ic2cropsInstance = IC2Module.Ic2Crops.getField("instance");
+        ic2cropsDisplayItem = IC2Module.Ic2Crops.getMethod("getDisplayItem", IC2Module.CropCard);
+
+        cCardMaxPoints = CropCard.getMethod("getGrowthDuration", ICropTile);
+        cCardMaxSize = CropCard.getMethod("getMaxSize");
+
+        teCropGetCropCard = TileEntityCrop.getMethod("getCrop");
+        teCropStorageNutrients = TileEntityCrop.getMethod("getStorageNutrients");
+        teCropStorageWater = TileEntityCrop.getMethod("getStorageWater");
+        teCropStorageWeedEX = TileEntityCrop.getMethod("getStorageWeedEX");
+        teCropTerrainNutrients = TileEntityCrop.getMethod("getTerrainNutrients");
+        teCropTerrainHumidity = TileEntityCrop.getMethod("getTerrainHumidity");
+        teCropTerrainAirQuality = TileEntityCrop.getMethod("getTerrainAirQuality");
+        teCropLightLevel = TileEntityCrop.getMethod("getLightLevel");
+        teCropScanLevel = TileEntityCrop.getMethod("getScanLevel");
+        teCropCurrentSize = TileEntityCrop.getMethod("getCurrentSize");
+        teCropGrowthPoints = TileEntityCrop.getMethod("getGrowthPoints");
+        teCropStatGrowth = TileEntityCrop.getMethod("getStatGrowth");
+        teCropStatGain = TileEntityCrop.getMethod("getStatGain");
+        teCropStatResistance = TileEntityCrop.getMethod("getStatResistance");
+
+        this.registrar.registerStackProvider(HUDHandlerCrops.INSTANCE, TileEntityCrop);
+        this.registrar.registerHeadProvider(HUDHandlerCrops.INSTANCE, TileEntityCrop);
+        this.registrar.registerBodyProvider(HUDHandlerCrops.INSTANCE, TileEntityCrop);
+        this.registrar.registerNBTProvider(HUDHandlerCrops.INSTANCE, TileEntityCrop);
+    }
+
+    private void registerMachines() throws Exception{
+            TileEntityElecMachine = Class.forName("ic2.core.block.base.tile.TileEntityElecMachine");
+            eMachineStored = TileEntityElecMachine.getDeclaredField("energy");
+            eMachineCapacity = TileEntityElecMachine.getDeclaredField("maxEnergy");
+            eMachineInput = TileEntityElecMachine.getDeclaredField("maxInput");
+            eMachineTier = TileEntityElecMachine.getDeclaredField("tier");
+
+            this.registrar.registerBodyProvider(HUDHandlerMachines.INSTANCE, TileEntityElecMachine);
+            this.registrar.registerNBTProvider(HUDHandlerMachines.INSTANCE, TileEntityElecMachine);
+    }
+
+    private void registerEUStorages() throws Exception{
+            TileEntityElectricBlock = Class.forName("ic2.core.block.base.tile.TileEntityElectricBlock");
+            eBlockStored = TileEntityElectricBlock.getDeclaredField("energy");
+            eBlockCapacity = TileEntityElectricBlock.getDeclaredField("maxEnergy");
+            eBlockOutput = TileEntityElectricBlock.getDeclaredField("output");
+            eBlockTier = TileEntityElectricBlock.getDeclaredField("tier");
+
+            this.registrar.registerBodyProvider(HUDHandlerMachines.INSTANCE, TileEntityElectricBlock);
+            this.registrar.registerNBTProvider(HUDHandlerMachines.INSTANCE, TileEntityElectricBlock);
+    }
+
+    private void registerGenerators() throws Exception{
+            TileEntityGeneratorBase = Class.forName("ic2.core.block.base.tile.TileEntityGeneratorBase");
+            generatorStored = TileEntityGeneratorBase.getDeclaredField("storage");
+            generatorCapacity = TileEntityGeneratorBase.getDeclaredField("maxStorage");
+            generatorOutput = TileEntityGeneratorBase.getDeclaredField("production");
+            generatorTier = TileEntityGeneratorBase.getDeclaredField("tier");
+
+            this.registrar.registerBodyProvider(HUDHandlerMachines.INSTANCE, TileEntityGeneratorBase);
+            this.registrar.registerNBTProvider(HUDHandlerMachines.INSTANCE, TileEntityGeneratorBase);
+    }
+
+    private void registerConfigs() {
+        this.registrar.addConfig("Industrial Craft 2", "ic2.storage", true);
+        this.registrar.addConfig("Industrial Craft 2", "ic2.percentage", true);
+        this.registrar.addConfig("Industrial Craft 2", "ic2.inouteu", true);
+        this.registrar.addConfig("Industrial Craft 2", "ic2.tier", true);
+        this.registrar.addConfig("IC2 Crops", "ic2.crops", true);
+        this.registrar.addConfig("IC2 Crops", "ic2.crops.sheakshow", true);
     }
 }

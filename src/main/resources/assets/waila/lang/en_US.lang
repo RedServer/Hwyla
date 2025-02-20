@@ -70,6 +70,8 @@ hud.ic2.msg.input=Input
 hud.ic2.msg.output=Output
 hud.ic2.msg.tier=Tier
 
+hud.ic2.msg.sneaktip=Sneak for more details
+hud.ic2.msg.scanlevel=Scan level
 hud.ic2.msg.growthtitile=Growth
 hud.ic2.msg.currentsize=Stage
 hud.ic2.msg.growthpoints=Points

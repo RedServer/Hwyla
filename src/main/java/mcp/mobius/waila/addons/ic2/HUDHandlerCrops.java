@@ -22,78 +22,121 @@ public class HUDHandlerCrops implements IWailaDataProvider {
     private static final Logger LOGGER = LogManager.getLogger();
     static final IWailaDataProvider INSTANCE = new HUDHandlerCrops();
 
-    private static final String DEFAULT_FORMAT = "§f%s: %d§r";
-    private static final String TITLE_FORMAT = "§f%s§r";
-    private static final String STAT_GROWTH_FORMAT = "§f%s: §2%d/31§r";
-    private static final String STAT_GAIN_FORMAT = "§f%s: §6%d/31§r";
-    private static final String STAT_RESISTANCE_FORMAT = "§f%s: §3%d/31§r";
+    private static final String FORMAT_PARAMS_DEFAULT = "§f%s: %d/%d§r";
+    private static final String FORMAT_PARAMS_COLORED = "%s%s:§r §f%d/%d§r";
+    private static final String FORMAT_PARAMS_TITLE = "§e%s§r";
+
+    @Nonnull
+    @Override
+    public ItemStack getWailaStack(IWailaDataAccessor accessor, IWailaConfigHandler config) {
+        ItemStack result = accessor.getStack();
+        TileEntity te = accessor.getTileEntity();
+        try {
+            if (!IC2Module.TileEntityCrop.isInstance(te)) return result;
+
+            Object cropCard = IC2Module.teCropGetCropCard.invoke(te);
+
+            if (cropCard == null) return result;
+            Object instance = IC2Module.ic2cropsInstance.get(null);
+            ItemStack displayItem = (ItemStack) IC2Module.ic2cropsDisplayItem.invoke(instance, cropCard);
+            if (displayItem == null) return result;
+            result = displayItem;
+
+
+        } catch (Exception e) {
+            LOGGER.error("Failed to get crop data", e);
+        }
+        return result;
+    }
+
+    @Nonnull
+    @Override
+    public List<String> getWailaHead(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
+        return currenttip;
+    }
 
     @Nonnull
     @Override
     public List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
+        if (!config.getConfig("ic2.crops")) return currenttip;
+
         Optional.ofNullable(accessor.getTileEntity()).ifPresent(te -> {
             NBTTagCompound tag = accessor.getNBTData();
             int scanLevel = tag.getInteger("scanLevel");
 
-            if (scanLevel >= 1) {
-                addGrowthInfo(currenttip, tag);
+            if (!accessor.getPlayer().isSneaking() && config.getConfig("ic2.crops.sheakshow")) {
+                currenttip.add(String.format(FORMAT_PARAMS_TITLE, LangUtil.translateG("hud.ic2.msg.sneaktip")));
+            } else {
+                if (scanLevel < 4) {
+                    currenttip.add(String.format(FORMAT_PARAMS_DEFAULT, LangUtil.translateG("hud.ic2.msg.scanlevel"), scanLevel, 4));
+                }
+                if (scanLevel >= 1) {
+                    addGrowthInfo(currenttip, tag);
+                }
+                if (scanLevel >= 4) {
+                    addStatInfo(currenttip, tag);
+                }
+                addStorageInfo(currenttip, tag);
+                addTerrainInfo(currenttip, tag);
             }
-            if (scanLevel >= 4) {
-                addStatInfo(currenttip, tag);
-            }
-            addStorageInfo(currenttip, tag);
-            addTerrainInfo(currenttip, tag);
         });
 
         return currenttip;
     }
 
     private void addGrowthInfo(List<String> currenttip, NBTTagCompound tag) {
-        currenttip.add(String.format(TITLE_FORMAT, LangUtil.translateG("hud.ic2.msg.growthtitile")));
-        currenttip.add(String.format(DEFAULT_FORMAT, LangUtil.translateG("hud.ic2.msg.currentsize"), tag.getInteger("currentSize")));
-        currenttip.add(String.format(DEFAULT_FORMAT, LangUtil.translateG("hud.ic2.msg.growthpoints"), tag.getInteger("growthPoints")));
+
+        currenttip.add(String.format(FORMAT_PARAMS_TITLE, LangUtil.translateG("hud.ic2.msg.growthtitile")));
+        currenttip.add(String.format(FORMAT_PARAMS_DEFAULT, LangUtil.translateG("hud.ic2.msg.currentsize"), tag.getInteger("currentSize"), tag.getInteger("maxSize")));
+        currenttip.add(String.format(FORMAT_PARAMS_DEFAULT, LangUtil.translateG("hud.ic2.msg.growthpoints"), tag.getInteger("growthPoints"), tag.getInteger("maxPoints")));
     }
 
     private void addStatInfo(List<String> currenttip, NBTTagCompound tag) {
-        currenttip.add(String.format(TITLE_FORMAT, LangUtil.translateG("hud.ic2.msg.stattitle")));
-        currenttip.add(String.format(STAT_GROWTH_FORMAT, LangUtil.translateG("hud.ic2.msg.statgrowth"), tag.getInteger("statGrowth")));
-        currenttip.add(String.format(STAT_GAIN_FORMAT, LangUtil.translateG("hud.ic2.msg.statgain"), tag.getInteger("statGain")));
-        currenttip.add(String.format(STAT_RESISTANCE_FORMAT, LangUtil.translateG("hud.ic2.msg.statresistance"), tag.getInteger("statResistance")));
+        currenttip.add(String.format(FORMAT_PARAMS_TITLE, LangUtil.translateG("hud.ic2.msg.stattitle")));
+        currenttip.add(String.format(FORMAT_PARAMS_COLORED, "§2", LangUtil.translateG("hud.ic2.msg.statgrowth"), tag.getInteger("statGrowth"), 31));
+        currenttip.add(String.format(FORMAT_PARAMS_COLORED, "§6", LangUtil.translateG("hud.ic2.msg.statgain"), tag.getInteger("statGain"), 31));
+        currenttip.add(String.format(FORMAT_PARAMS_COLORED, "§3", LangUtil.translateG("hud.ic2.msg.statresistance"), tag.getInteger("statResistance"), 31));
     }
 
     private void addStorageInfo(List<String> currenttip, NBTTagCompound tag) {
-        currenttip.add(String.format(TITLE_FORMAT, LangUtil.translateG("hud.ic2.msg.storagetitle")));
-        currenttip.add(String.format(DEFAULT_FORMAT, LangUtil.translateG("hud.ic2.msg.storagenutrients"), tag.getInteger("storageNutrients")));
-        currenttip.add(String.format(DEFAULT_FORMAT, LangUtil.translateG("hud.ic2.msg.storagewater"), tag.getInteger("storageWater")));
-        currenttip.add(String.format(DEFAULT_FORMAT, LangUtil.translateG("hud.ic2.msg.storageweedex"), tag.getInteger("storageWeedEX")));
+        currenttip.add(String.format(FORMAT_PARAMS_TITLE, LangUtil.translateG("hud.ic2.msg.storagetitle")));
+        currenttip.add(String.format(FORMAT_PARAMS_DEFAULT, LangUtil.translateG("hud.ic2.msg.storagenutrients"), tag.getInteger("storageNutrients"), 300));
+        currenttip.add(String.format(FORMAT_PARAMS_DEFAULT, LangUtil.translateG("hud.ic2.msg.storagewater"), tag.getInteger("storageWater"), 200));
+        currenttip.add(String.format(FORMAT_PARAMS_DEFAULT, LangUtil.translateG("hud.ic2.msg.storageweedex"), tag.getInteger("storageWeedEX"), 150));
     }
 
     private void addTerrainInfo(List<String> currenttip, NBTTagCompound tag) {
-        currenttip.add(String.format(TITLE_FORMAT, LangUtil.translateG("hud.ic2.msg.terrraintitle")));
-        currenttip.add(String.format(DEFAULT_FORMAT, LangUtil.translateG("hud.ic2.msg.terrainnutrients"), tag.getInteger("terrainNutrients")));
-        currenttip.add(String.format(DEFAULT_FORMAT, LangUtil.translateG("hud.ic2.msg.terrainhumidity"), tag.getInteger("terrainHumidity")));
-        currenttip.add(String.format(DEFAULT_FORMAT, LangUtil.translateG("hud.ic2.msg.terrainairquality"), tag.getInteger("terrainAirQuality")));
-        currenttip.add(String.format(DEFAULT_FORMAT, LangUtil.translateG("hud.ic2.msg.lightlevel"), tag.getInteger("lightLevel")));
+        currenttip.add(String.format(FORMAT_PARAMS_TITLE, LangUtil.translateG("hud.ic2.msg.terrraintitle")));
+        currenttip.add(String.format(FORMAT_PARAMS_DEFAULT, LangUtil.translateG("hud.ic2.msg.terrainnutrients"), tag.getInteger("terrainNutrients"), 20));
+        currenttip.add(String.format(FORMAT_PARAMS_DEFAULT, LangUtil.translateG("hud.ic2.msg.terrainhumidity"), tag.getInteger("terrainHumidity"), 20));
+        currenttip.add(String.format(FORMAT_PARAMS_DEFAULT, LangUtil.translateG("hud.ic2.msg.terrainairquality"), tag.getInteger("terrainAirQuality"), 10));
+        currenttip.add(String.format(FORMAT_PARAMS_DEFAULT, LangUtil.translateG("hud.ic2.msg.lightlevel"), tag.getInteger("lightLevel"), 15));
     }
 
     @Nonnull
     @Override
     public NBTTagCompound getNBTData(EntityPlayerMP player, TileEntity te, NBTTagCompound tag, World world, BlockPos pos) {
         try {
-            if (IC2Module.crops.isInstance(te)) {
-                tag.setInteger("scanLevel", (Integer) IC2Module.cropsScanLevel.invoke(te));
-                tag.setInteger("storageNutrients", (Integer) IC2Module.cropsStorageNutrients.invoke(te));
-                tag.setInteger("storageWater", (Integer) IC2Module.cropsStorageWater.invoke(te));
-                tag.setInteger("storageWeedEX", (Integer) IC2Module.cropsStorageWeedEX.invoke(te));
-                tag.setInteger("terrainNutrients", (Integer) IC2Module.cropsTerrainNutrients.invoke(te));
-                tag.setInteger("terrainHumidity", (Integer) IC2Module.cropsTerrainHumidity.invoke(te));
-                tag.setInteger("terrainAirQuality", (Integer) IC2Module.cropsTerrainAirQuality.invoke(te));
-                tag.setInteger("lightLevel", (Integer) IC2Module.cropsLightLevel.invoke(te));
-                tag.setInteger("currentSize", (Integer) IC2Module.cropsCurrentSize.invoke(te));
-                tag.setInteger("growthPoints", (Integer) IC2Module.cropsGrowthPoints.invoke(te));
-                tag.setInteger("statGrowth", (Integer) IC2Module.cropsStatGrowth.invoke(te));
-                tag.setInteger("statGain", (Integer) IC2Module.cropsStatGain.invoke(te));
-                tag.setInteger("statResistance", (Integer) IC2Module.cropsStatResistance.invoke(te));
+            if (IC2Module.TileEntityCrop.isInstance(te)) {
+                Object cropCard = IC2Module.teCropGetCropCard.invoke(te);
+                if (cropCard != null) {
+                    tag.setInteger("maxSize", (Integer) IC2Module.cCardMaxSize.invoke(cropCard));
+                    tag.setInteger("maxPoints", (Integer) IC2Module.cCardMaxPoints.invoke(cropCard, IC2Module.ICropTile.cast(te)));
+                }
+
+                tag.setInteger("scanLevel", (Integer) IC2Module.teCropScanLevel.invoke(te));
+                tag.setInteger("storageNutrients", (Integer) IC2Module.teCropStorageNutrients.invoke(te));
+                tag.setInteger("storageWater", (Integer) IC2Module.teCropStorageWater.invoke(te));
+                tag.setInteger("storageWeedEX", (Integer) IC2Module.teCropStorageWeedEX.invoke(te));
+                tag.setInteger("terrainNutrients", (Integer) IC2Module.teCropTerrainNutrients.invoke(te));
+                tag.setInteger("terrainHumidity", (Integer) IC2Module.teCropTerrainHumidity.invoke(te));
+                tag.setInteger("terrainAirQuality", (Integer) IC2Module.teCropTerrainAirQuality.invoke(te));
+                tag.setInteger("lightLevel", (Integer) IC2Module.teCropLightLevel.invoke(te));
+                tag.setInteger("currentSize", (Integer) IC2Module.teCropCurrentSize.invoke(te));
+                tag.setInteger("growthPoints", (Integer) IC2Module.teCropGrowthPoints.invoke(te));
+                tag.setInteger("statGrowth", (Integer) IC2Module.teCropStatGrowth.invoke(te));
+                tag.setInteger("statGain", (Integer) IC2Module.teCropStatGain.invoke(te));
+                tag.setInteger("statResistance", (Integer) IC2Module.teCropStatResistance.invoke(te));
             }
         } catch (Exception e) {
             LOGGER.error("Failed to get crop data", e);
