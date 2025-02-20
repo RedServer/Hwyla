@@ -90,20 +90,20 @@ public class HUDHandlerMachines implements IWailaDataProvider {
     @Override
     public NBTTagCompound getNBTData(EntityPlayerMP player, TileEntity te, NBTTagCompound tag, World world, BlockPos pos) {
         try {
-            if (IC2Module.generator.isInstance(te)) {
+            if (IC2Module.TileEntityGeneratorBase.isInstance(te)) {
 
                 tag.setDouble("stored", IC2Module.generatorStored.getDouble(te));
                 tag.setLong("capacity", IC2Module.generatorCapacity.getLong(te));
                 tag.setInteger("input", 0);
                 tag.setInteger("output", IC2Module.generatorOutput.getInt(te));
                 tag.setInteger("tier", IC2Module.generatorTier.getInt(te));
-            } else if (IC2Module.eBlock.isInstance(te)) {
+            } else if (IC2Module.TileEntityElectricBlock.isInstance(te)) {
                 tag.setDouble("stored", IC2Module.eBlockStored.getDouble(te));
                 tag.setLong("capacity", IC2Module.eBlockCapacity.getLong(te));
                 tag.setInteger("input", 0);
                 tag.setInteger("output", IC2Module.eBlockOutput.getInt(te));
                 tag.setInteger("tier", IC2Module.eBlockTier.getInt(te));
-            } else if (IC2Module.eMachine.isInstance(te)) {
+            } else if (IC2Module.TileEntityElecMachine.isInstance(te)) {
                 tag.setDouble("stored", 0);
                 tag.setLong("capacity", 0);
                 tag.setInteger("input", IC2Module.eMachineInput.getInt(te));

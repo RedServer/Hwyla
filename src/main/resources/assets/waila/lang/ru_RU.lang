@@ -70,6 +70,8 @@ hud.ic2.msg.input=Вход
 hud.ic2.msg.output=Выход
 hud.ic2.msg.tier=Энергоуровень
 
+hud.ic2.msg.sneaktip=Присесть для подробной информации
+hud.ic2.msg.scanlevel=Сканер
 hud.ic2.msg.growthtitile=Рост
 hud.ic2.msg.currentsize=Этап
 hud.ic2.msg.growthpoints=Очки
