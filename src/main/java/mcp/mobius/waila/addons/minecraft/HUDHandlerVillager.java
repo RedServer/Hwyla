@@ -32,7 +32,7 @@ public class HUDHandlerVillager implements IWailaEntityProvider {
     @Nonnull
     @Override
     public NBTTagCompound getNBTData(EntityPlayerMP player, Entity ent, NBTTagCompound tag, World world) {
-        int careerId = ReflectionHelper.getPrivateValue(EntityVillager.class, (EntityVillager) ent, "field_175563_bv", "careerId");
+        int careerId = ReflectionHelper.getPrivateValue(EntityVillager.class, (EntityVillager) ent, "careerId", "field_175563_bv");
         tag.setInteger("careerId", careerId - 1);
         return tag;
     }
