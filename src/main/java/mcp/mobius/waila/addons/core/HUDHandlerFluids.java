@@ -45,12 +45,11 @@ public class HUDHandlerFluids implements IWailaDataProvider {
             name = displayName;
 
         if (name != null)
-            currenttip.add("\u00a7r" + name);
+            currenttip.add("§r" + name);
 
-        if (currenttip.isEmpty())
-            currenttip.add("\u00a7r" + String.format(FormattingConfig.fluidFormat, "< Unnamed >"));
-        else if (ConfigHandler.instance().getConfig(Configuration.CATEGORY_GENERAL, Constants.CFG_WAILA_METADATA, true) && !Strings.isNullOrEmpty(FormattingConfig.metaFormat))
-            currenttip.add(String.format(FormattingConfig.metaFormat, accessor.getBlock().getRegistryName().toString(), accessor.getMetadata()));
+        String modName = ModIdentification.findModContainer(FluidRegistry.getDefaultFluidName(fluid).split(":")[0]).getName();
+        if (!Strings.isNullOrEmpty(FormattingConfig.modNameFormat) && !Strings.isNullOrEmpty(modName))
+            currenttip.add(String.format(FormattingConfig.modNameFormat, modName));
 
         return currenttip;
     }
@@ -62,9 +61,12 @@ public class HUDHandlerFluids implements IWailaDataProvider {
         if (fluid == null)
             return currenttip;
 
-        String modName = ModIdentification.findModContainer(FluidRegistry.getDefaultFluidName(fluid).split(":")[0]).getName();
-        if (!Strings.isNullOrEmpty(FormattingConfig.modNameFormat) && !Strings.isNullOrEmpty(modName))
-            currenttip.add(String.format(FormattingConfig.modNameFormat, modName));
+        String displayName = String.format(FormattingConfig.fluidFormat, fluid.getLocalizedName(new FluidStack(fluid, 1000)));
+
+        if (displayName == null || displayName.endsWith("Unnamed"))
+            currenttip.add("§r" + String.format(FormattingConfig.fluidFormat, "< Unnamed >"));
+        else if (ConfigHandler.instance().getConfig(Configuration.CATEGORY_GENERAL, Constants.CFG_WAILA_METADATA, true) && !Strings.isNullOrEmpty(FormattingConfig.metaFormat))
+            currenttip.add(String.format(FormattingConfig.metaFormat, accessor.getBlock().getRegistryName().toString(), accessor.getMetadata()));
 
         return currenttip;
     }

@@ -36,6 +36,9 @@ public class HUDHandlerEntities implements IWailaEntityProvider {
             }
         } else currenttip.add("Unknown");
 
+        if (!Strings.isNullOrEmpty(FormattingConfig.modNameFormat) && !Strings.isNullOrEmpty(getEntityMod(entity)))
+            currenttip.add(String.format(FormattingConfig.modNameFormat, getEntityMod(entity)));
+
         return currenttip;
     }
 
@@ -59,8 +62,6 @@ public class HUDHandlerEntities implements IWailaEntityProvider {
     @Nonnull
     @Override
     public List<String> getWailaTail(Entity entity, List<String> currenttip, IWailaEntityAccessor accessor, IWailaConfigHandler config) {
-        if (!Strings.isNullOrEmpty(FormattingConfig.modNameFormat) && !Strings.isNullOrEmpty(getEntityMod(entity)))
-            currenttip.add(String.format(FormattingConfig.modNameFormat, getEntityMod(entity)));
 
         return currenttip;
     }

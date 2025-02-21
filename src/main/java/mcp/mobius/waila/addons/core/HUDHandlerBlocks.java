@@ -36,6 +36,7 @@ public class HUDHandlerBlocks implements IWailaDataProvider {
         String displayName = DisplayUtil.itemDisplayNameShort(itemStack);
         if (displayName != null && !displayName.endsWith("Unnamed"))
             name = displayName;
+
         if (name != null)
             currenttip.add(name);
 
@@ -46,10 +47,10 @@ public class HUDHandlerBlocks implements IWailaDataProvider {
                 redstoneMeta = " " + redstoneMeta;
             currenttip.set(currenttip.size() - 1, name + " " + redstoneMeta);
         }
-        if (currenttip.size() == 0)
-            currenttip.add("\u00a7r" + String.format(FormattingConfig.blockFormat, "< Unnamed >"));
-        else if (ConfigHandler.instance().getConfig(Configuration.CATEGORY_GENERAL, Constants.CFG_WAILA_METADATA, true) && !Strings.isNullOrEmpty(FormattingConfig.metaFormat))
-            currenttip.add("\u00a7r" + String.format(FormattingConfig.metaFormat, accessor.getBlock().getRegistryName().toString(), accessor.getMetadata()));
+
+        String modName = ModIdentification.nameFromStack(itemStack);
+        if (!Strings.isNullOrEmpty(FormattingConfig.modNameFormat))
+            currenttip.add(String.format(FormattingConfig.modNameFormat, modName));
 
         return currenttip;
     }
@@ -74,9 +75,12 @@ public class HUDHandlerBlocks implements IWailaDataProvider {
     public List<String> getWailaTail(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
         if (accessor.getBlockState().getMaterial().isLiquid())
             return currenttip;
-        String modName = ModIdentification.nameFromStack(itemStack);
-        if (!Strings.isNullOrEmpty(FormattingConfig.modNameFormat))
-            currenttip.add(String.format(FormattingConfig.modNameFormat, modName));
+
+        String displayName = DisplayUtil.itemDisplayNameShort(itemStack);
+        if (displayName == null || displayName.endsWith("Unnamed"))
+            currenttip.add("§r" + String.format(FormattingConfig.blockFormat, "< Unnamed >"));
+        else if (ConfigHandler.instance().getConfig(Configuration.CATEGORY_GENERAL, Constants.CFG_WAILA_METADATA, true) && !Strings.isNullOrEmpty(FormattingConfig.metaFormat))
+            currenttip.add("§r" + String.format(FormattingConfig.metaFormat, accessor.getBlock().getRegistryName().toString(), accessor.getMetadata()));
 
         return currenttip;
     }

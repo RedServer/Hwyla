@@ -91,7 +91,7 @@ public class OverlayRenderer {
 
         GlStateManager.enableRescaleNormal();
         if (tooltip.hasIcon() && !tooltip.stack.isEmpty())
-            DisplayUtil.renderStack(event.getX() + 5, event.getY() + event.getHeight() / 2 - 8, tooltip.stack);
+            DisplayUtil.renderStack(event.getX() + 5, event.getY() + 5, tooltip.stack);
 
         MinecraftForge.EVENT_BUS.post(new WailaRenderEvent.Post(event.getX(), event.getY(), event.getWidth(), event.getHeight()));
 
