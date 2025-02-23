@@ -70,6 +70,7 @@ hud.ic2.msg.input=Input
 hud.ic2.msg.output=Output
 hud.ic2.msg.tier=Tier
 
+hud.ic2.msg.unknown=Unknown crop
 hud.ic2.msg.sneaktip=Sneak for more details
 hud.ic2.msg.scanlevel=Scan level
 hud.ic2.msg.growthtitile=Growth
@@ -116,6 +117,8 @@ option.general.registry=Show registry data
 option.capability.tankinfo=Show tank data
 option.capability.energyinfo=Show energy data
 
+option.ic2.crops.sneakshow=Show while sneak
+option.ic2.crops=Show crop info
 option.ic2.storage=Show EU storage
 option.ic2.percentage=EU percentage
 option.ic2.inouteu=Input/Output EU

@@ -8,18 +8,20 @@ import net.minecraftforge.fml.common.Loader;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 
 @WailaPlugin
 public class IC2Module implements IWailaPlugin {
 
+    protected static Map<String, Class<?>> classes = new HashMap<>();
+    protected static Map<String, Field> fields = new HashMap<>();
+    protected static Map<String, Method> methods = new HashMap<>();
+
     protected static Class<?>
             TileEntityGeneratorBase,
             TileEntityElectricBlock,
-            TileEntityElecMachine,
-            TileEntityCrop,
-            CropCard,
-            ICropTile,
-            Ic2Crops;
+            TileEntityElecMachine;
 
     protected static Field
             generatorStored,
@@ -33,27 +35,7 @@ public class IC2Module implements IWailaPlugin {
             eMachineStored,
             eMachineCapacity,
             eMachineInput,
-            eMachineTier,
-            ic2cropsInstance;
-
-    protected static Method
-            ic2cropsDisplayItem,
-            cCardMaxSize,
-            cCardMaxPoints,
-            teCropGetCropCard,
-            teCropStorageNutrients,
-            teCropStorageWater,
-            teCropStorageWeedEX,
-            teCropTerrainNutrients,
-            teCropTerrainHumidity,
-            teCropTerrainAirQuality,
-            teCropLightLevel,
-            teCropScanLevel,
-            teCropCurrentSize,
-            teCropGrowthPoints,
-            teCropStatGrowth,
-            teCropStatGain,
-            teCropStatResistance;
+            eMachineTier;
 
 
     private IWailaRegistrar registrar;
@@ -76,36 +58,43 @@ public class IC2Module implements IWailaPlugin {
     }
 
     private void registerCrops() throws Exception {
-        TileEntityCrop = Class.forName("ic2.core.block.crop.TileEntityCrop");
-        CropCard = Class.forName("ic2.api.crops.CropCard");
-        ICropTile = Class.forName("ic2.api.crops.ICropTile");
-        Ic2Crops = Class.forName("ic2.core.block.crop.Ic2Crops");
 
-        ic2cropsInstance = IC2Module.Ic2Crops.getField("instance");
-        ic2cropsDisplayItem = IC2Module.Ic2Crops.getMethod("getDisplayItem", IC2Module.CropCard);
+        registerClass("ic2.core.platform.lang.components.base.LocaleComp");
+        registerClass("ic2.api.crops.ICropTile");
+        registerClass("ic2.api.crops.CropCard");
+        registerClass("ic2.core.block.crop.Ic2Crops");
+        registerClass("ic2.core.block.crop.TileEntityCrop");
 
-        cCardMaxPoints = CropCard.getMethod("getGrowthDuration", ICropTile);
-        cCardMaxSize = CropCard.getMethod("getMaxSize");
+        registerMethod("LocaleComp","getLocalized");
 
-        teCropGetCropCard = TileEntityCrop.getMethod("getCrop");
-        teCropStorageNutrients = TileEntityCrop.getMethod("getStorageNutrients");
-        teCropStorageWater = TileEntityCrop.getMethod("getStorageWater");
-        teCropStorageWeedEX = TileEntityCrop.getMethod("getStorageWeedEX");
-        teCropTerrainNutrients = TileEntityCrop.getMethod("getTerrainNutrients");
-        teCropTerrainHumidity = TileEntityCrop.getMethod("getTerrainHumidity");
-        teCropTerrainAirQuality = TileEntityCrop.getMethod("getTerrainAirQuality");
-        teCropLightLevel = TileEntityCrop.getMethod("getLightLevel");
-        teCropScanLevel = TileEntityCrop.getMethod("getScanLevel");
-        teCropCurrentSize = TileEntityCrop.getMethod("getCurrentSize");
-        teCropGrowthPoints = TileEntityCrop.getMethod("getGrowthPoints");
-        teCropStatGrowth = TileEntityCrop.getMethod("getStatGrowth");
-        teCropStatGain = TileEntityCrop.getMethod("getStatGain");
-        teCropStatResistance = TileEntityCrop.getMethod("getStatResistance");
+        registerMethod("CropCard", "getGrowthDuration", classes.get("ICropTile"));
+        registerMethod("CropCard", "getSeeds", classes.get("ICropTile"));
+        registerMethod("CropCard", "getMaxSize");
 
-        this.registrar.registerStackProvider(HUDHandlerCrops.INSTANCE, TileEntityCrop);
-        this.registrar.registerHeadProvider(HUDHandlerCrops.INSTANCE, TileEntityCrop);
-        this.registrar.registerBodyProvider(HUDHandlerCrops.INSTANCE, TileEntityCrop);
-        this.registrar.registerNBTProvider(HUDHandlerCrops.INSTANCE, TileEntityCrop);
+        registerField("Ic2Crops", "instance");
+        registerMethod("Ic2Crops", "getCropName", classes.get("CropCard"));
+        registerMethod("Ic2Crops", "getDisplayItem", classes.get("CropCard"));
+
+        registerMethod("TileEntityCrop", "getCrop");
+        registerMethod("TileEntityCrop", "getScanLevel");
+        registerMethod("TileEntityCrop", "getStorageNutrients");
+        registerMethod("TileEntityCrop", "getStorageWater");
+        registerMethod("TileEntityCrop", "getStorageWeedEX");
+        registerMethod("TileEntityCrop", "getTerrainNutrients");
+        registerMethod("TileEntityCrop", "getTerrainHumidity");
+        registerMethod("TileEntityCrop", "getTerrainAirQuality");
+        registerMethod("TileEntityCrop", "getLightLevel");
+        registerMethod("TileEntityCrop", "getCurrentSize");
+        registerMethod("TileEntityCrop", "getGrowthPoints");
+        registerMethod("TileEntityCrop", "getStatGrowth");
+        registerMethod("TileEntityCrop", "getStatGain");
+        registerMethod("TileEntityCrop", "getStatResistance");
+
+
+        this.registrar.registerStackProvider(HUDHandlerCrops.INSTANCE, classes.get("TileEntityCrop"));
+        this.registrar.registerHeadProvider(HUDHandlerCrops.INSTANCE, classes.get("TileEntityCrop"));
+        this.registrar.registerBodyProvider(HUDHandlerCrops.INSTANCE, classes.get("TileEntityCrop"));
+        this.registrar.registerNBTProvider(HUDHandlerCrops.INSTANCE, classes.get("TileEntityCrop"));
     }
 
     private void registerMachines() throws Exception{
@@ -147,6 +136,23 @@ public class IC2Module implements IWailaPlugin {
         this.registrar.addConfig("Industrial Craft 2", "ic2.inouteu", true);
         this.registrar.addConfig("Industrial Craft 2", "ic2.tier", true);
         this.registrar.addConfig("IC2 Crops", "ic2.crops", true);
-        this.registrar.addConfig("IC2 Crops", "ic2.crops.sheakshow", true);
+        this.registrar.addConfig("IC2 Crops", "ic2.crops.sneakshow", true);
+    }
+
+
+    protected void registerClass(String className) throws Exception {
+        Class<?> clazz = Class.forName(className);
+        classes.put(clazz.getSimpleName(), clazz);
+    }
+
+    protected void registerField(String className, String fieldName) throws Exception {
+        Class<?> clazz = classes.get(className);
+        Field field = clazz.getField(fieldName);
+        fields.put(clazz.getSimpleName() + "." + fieldName, field);
+    }
+    protected void registerMethod(String className, String methodName, Class<?>... parameterTypes) throws Exception {
+        Class<?> clazz = classes.get(className);
+        Method method = clazz.getMethod(methodName, parameterTypes);
+        methods.put(clazz.getSimpleName() + "." + methodName, method);
     }
 }

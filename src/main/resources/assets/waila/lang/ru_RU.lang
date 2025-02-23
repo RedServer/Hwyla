@@ -70,6 +70,7 @@ hud.ic2.msg.input=Вход
 hud.ic2.msg.output=Выход
 hud.ic2.msg.tier=Энергоуровень
 
+hud.ic2.msg.unknown=Неизвестный посев
 hud.ic2.msg.sneaktip=Присесть для подробной информации
 hud.ic2.msg.scanlevel=Сканер
 hud.ic2.msg.growthtitile=Рост
@@ -116,6 +117,8 @@ option.general.registry=Показать данные реестра
 option.capability.tankinfo=Показать данные резервуара
 option.capability.energyinfo=Показать данные энергии
 
+option.ic2.crops.sneakshow=Присесть для информации
+option.ic2.crops=Показывать информацию о семенах
 option.ic2.storage=Заряд EU
 option.ic2.percentage=EU в процентах 
 option.ic2.inouteu=Макс. вход/выход EU
