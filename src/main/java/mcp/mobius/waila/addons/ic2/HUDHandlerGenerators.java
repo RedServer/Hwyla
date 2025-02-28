@@ -15,10 +15,10 @@ import net.minecraft.world.World;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class HUDHandlerMachines implements IWailaDataProvider {
+public class HUDHandlerGenerators implements IWailaDataProvider {
 
     private static final Logger LOGGER = LogManager.getLogger();
-    static final IWailaDataProvider INSTANCE = new HUDHandlerMachines();
+    static final IWailaDataProvider INSTANCE = new HUDHandlerGenerators();
     private static final String TEXT_LINE_FORMAT = "%s: §f%d§r ";
     private static final String ENERGY_INOUT_FORMAT = "%s: §f%d§r EU/t";
     private static final String STORAGE_FORMAT = "%s: §f%d/%d§r %s ";
@@ -33,14 +33,22 @@ public class HUDHandlerMachines implements IWailaDataProvider {
         int maxEU = nbtData.getInteger("maxEU");
         int storedEU = nbtData.getInteger("storedEU");
 
+        int maxFuel = nbtData.getInteger("maxFuel");
+        int storedFuel = nbtData.getInteger("storedFuel");
+
         if (config.getConfig("ic2.tier")) {
             currentTip.add(String.format(TEXT_LINE_FORMAT, LangUtil.translateG("hud.ic2.msg.tier"), nbtData.getInteger("tier")));
         }
 
-        currentTip.add(String.format(ENERGY_INOUT_FORMAT, LangUtil.translateG("hud.ic2.msg.input"), nbtData.getInteger("input")));
+
+        currentTip.add(String.format(ENERGY_INOUT_FORMAT, LangUtil.translateG("hud.ic2.msg.output"), nbtData.getInteger("output")));
 
         if (maxEU > 0 && config.getConfig("ic2.storageenergy")) {
             addStorageLine(currentTip, config, LangUtil.translateG("hud.ic2.msg.storedenergy"), "EU", storedEU, maxEU);
+        }
+
+        if (maxFuel > 0 && config.getConfig("ic2.storagefuel")) {
+            addStorageLine(currentTip, config, LangUtil.translateG("hud.ic2.msg.storedfuel"), "", storedFuel, maxFuel);
         }
         return currentTip;
     }
@@ -49,14 +57,16 @@ public class HUDHandlerMachines implements IWailaDataProvider {
     @Override
     public NBTTagCompound getNBTData(EntityPlayerMP player, TileEntity te, NBTTagCompound tag, World world, BlockPos pos) {
         try {
-            if (IC2Module.getClass("TileEntityElecMachine").isInstance(te)) {
-                tag.setInteger("tier", (Integer) IC2Module.invokeMethod("TileEntityElecMachine.getSinkTier", te));
-                tag.setInteger("input", (Integer) IC2Module.getField("TileEntityElecMachine.maxInput", te));
-                tag.setInteger("maxEU", (Integer) IC2Module.invokeMethod("TileEntityElecMachine.getMaxEU", te));
-                tag.setInteger("storedEU", (Integer) IC2Module.invokeMethod("TileEntityElecMachine.getStoredEU", te));
+            if (IC2Module.getClass("TileEntityFuelGeneratorBase").isInstance(te)) {
+                tag.setInteger("tier", (Integer) IC2Module.invokeMethod("TileEntityFuelGeneratorBase.getSourceTier", te));
+                tag.setInteger("output", (Integer) IC2Module.invokeMethod("TileEntityFuelGeneratorBase.getOutput", te));
+                tag.setInteger("maxEU", (Integer) IC2Module.invokeMethod("TileEntityFuelGeneratorBase.getMaxEU", te));
+                tag.setInteger("storedEU", (Integer) IC2Module.invokeMethod("TileEntityFuelGeneratorBase.getStoredEU", te));
+                tag.setInteger("maxFuel", Math.round((Float) IC2Module.invokeMethod("TileEntityFuelGeneratorBase.getMaxFuel", te)));
+                tag.setInteger("storedFuel", Math.round((Float) IC2Module.invokeMethod("TileEntityFuelGeneratorBase.getFuel", te)));
             }
         } catch (Exception e) {
-            LOGGER.error("Failed to get machines data", e);
+            LOGGER.error("Failed to get generator data", e);
         }
         return tag;
     }

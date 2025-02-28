@@ -34,9 +34,9 @@ public class HUDHandlerCrops implements IWailaDataProvider {
         TileEntity te = accessor.getTileEntity();
 
         try {
-            if (!IC2Module.classes.get("TileEntityCrop").isInstance(te)) return result;
+            if (!IC2Module.getClass("TileEntityCrop").isInstance(te)) return result;
 
-            Object cropCard = IC2Module.methods.get("TileEntityCrop.getCrop").invoke(te);
+            Object cropCard = IC2Module.invokeMethod("TileEntityCrop.getCrop", te);
 
             if (cropCard == null) return result;
 
@@ -45,12 +45,12 @@ public class HUDHandlerCrops implements IWailaDataProvider {
                 return result;
             }
 
-            Object instance = IC2Module.fields.get("Ic2Crops.instance").get(null);
-            ItemStack displayItem = (ItemStack) IC2Module.methods.get("Ic2Crops.getDisplayItem").invoke(instance, cropCard);
+            Object instance = IC2Module.getField("Ic2Crops.instance", null);
+            ItemStack displayItem = (ItemStack) IC2Module.invokeMethod("Ic2Crops.getDisplayItem", instance, cropCard);
             if (displayItem == null) return result;
 
-            Object LocaleContext = IC2Module.methods.get("Ic2Crops.getCropName").invoke(instance, cropCard);
-            displayItem.setStackDisplayName((String) IC2Module.methods.get("LocaleComp.getLocalized").invoke(LocaleContext));
+            Object LocaleContext = IC2Module.invokeMethod("Ic2Crops.getCropName", instance, cropCard);
+            displayItem.setStackDisplayName((String) IC2Module.invokeMethod("LocaleComp.getLocalized", LocaleContext));
             result = displayItem;
         } catch (Exception e) {
             LOGGER.error("Failed to get crop data", e);
@@ -126,26 +126,26 @@ public class HUDHandlerCrops implements IWailaDataProvider {
     @Override
     public NBTTagCompound getNBTData(EntityPlayerMP player, TileEntity te, NBTTagCompound tag, World world, BlockPos pos) {
         try {
-            if (IC2Module.classes.get("TileEntityCrop").isInstance(te)) {
-                Object cropCard = IC2Module.methods.get("TileEntityCrop.getCrop").invoke(te);
+            if (IC2Module.getClass("TileEntityCrop").isInstance(te)) {
+                Object cropCard = IC2Module.invokeMethod("TileEntityCrop.getCrop", te);
                 if (cropCard != null) {
-                    tag.setInteger("maxSize", (Integer) IC2Module.methods.get("CropCard.getMaxSize").invoke(cropCard));
-                    tag.setInteger("maxPoints", (Integer) IC2Module.methods.get("CropCard.getGrowthDuration").invoke(cropCard, IC2Module.classes.get("ICropTile").cast(te)));
+                    tag.setInteger("maxSize", (Integer) IC2Module.invokeMethod("CropCard.getMaxSize",cropCard));
+                    tag.setInteger("maxPoints", (Integer) IC2Module.invokeMethod("CropCard.getGrowthDuration",cropCard, IC2Module.getClass("ICropTile").cast(te)));
                 }
 
-                tag.setInteger("scanLevel",         (Integer) IC2Module.methods.get("TileEntityCrop.getScanLevel").invoke(te));
-                tag.setInteger("storageNutrients",  (Integer) IC2Module.methods.get("TileEntityCrop.getStorageNutrients").invoke(te));
-                tag.setInteger("storageWater",      (Integer) IC2Module.methods.get("TileEntityCrop.getStorageWater").invoke(te));
-                tag.setInteger("storageWeedEX",     (Integer) IC2Module.methods.get("TileEntityCrop.getStorageWeedEX").invoke(te));
-                tag.setInteger("terrainNutrients",  (Integer) IC2Module.methods.get("TileEntityCrop.getTerrainNutrients").invoke(te));
-                tag.setInteger("terrainHumidity",   (Integer) IC2Module.methods.get("TileEntityCrop.getTerrainHumidity").invoke(te));
-                tag.setInteger("terrainAirQuality", (Integer) IC2Module.methods.get("TileEntityCrop.getTerrainAirQuality").invoke(te));
-                tag.setInteger("lightLevel",        (Integer) IC2Module.methods.get("TileEntityCrop.getLightLevel").invoke(te));
-                tag.setInteger("currentSize",       (Integer) IC2Module.methods.get("TileEntityCrop.getCurrentSize").invoke(te));
-                tag.setInteger("growthPoints",      (Integer) IC2Module.methods.get("TileEntityCrop.getGrowthPoints").invoke(te));
-                tag.setInteger("statGrowth",        (Integer) IC2Module.methods.get("TileEntityCrop.getStatGrowth").invoke(te));
-                tag.setInteger("statGain",          (Integer) IC2Module.methods.get("TileEntityCrop.getStatGain").invoke(te));
-                tag.setInteger("statResistance",    (Integer) IC2Module.methods.get("TileEntityCrop.getStatResistance").invoke(te));
+                tag.setInteger("scanLevel",         (Integer) IC2Module.invokeMethod("TileEntityCrop.getScanLevel", te));
+                tag.setInteger("storageNutrients",  (Integer) IC2Module.invokeMethod("TileEntityCrop.getStorageNutrients", te));
+                tag.setInteger("storageWater",      (Integer) IC2Module.invokeMethod("TileEntityCrop.getStorageWater", te));
+                tag.setInteger("storageWeedEX",     (Integer) IC2Module.invokeMethod("TileEntityCrop.getStorageWeedEX", te));
+                tag.setInteger("terrainNutrients",  (Integer) IC2Module.invokeMethod("TileEntityCrop.getTerrainNutrients", te));
+                tag.setInteger("terrainHumidity",   (Integer) IC2Module.invokeMethod("TileEntityCrop.getTerrainHumidity", te));
+                tag.setInteger("terrainAirQuality", (Integer) IC2Module.invokeMethod("TileEntityCrop.getTerrainAirQuality", te));
+                tag.setInteger("lightLevel",        (Integer) IC2Module.invokeMethod("TileEntityCrop.getLightLevel", te));
+                tag.setInteger("currentSize",       (Integer) IC2Module.invokeMethod("TileEntityCrop.getCurrentSize", te));
+                tag.setInteger("growthPoints",      (Integer) IC2Module.invokeMethod("TileEntityCrop.getGrowthPoints", te));
+                tag.setInteger("statGrowth",        (Integer) IC2Module.invokeMethod("TileEntityCrop.getStatGrowth", te));
+                tag.setInteger("statGain",          (Integer) IC2Module.invokeMethod("TileEntityCrop.getStatGain", te));
+                tag.setInteger("statResistance",    (Integer) IC2Module.invokeMethod("TileEntityCrop.getStatResistance", te));
             }
         } catch (Exception e) {
             LOGGER.error("Failed to get crop data", e);

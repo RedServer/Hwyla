@@ -65,7 +65,11 @@ hud.msg.offers=Offers
 hud.msg.demands=Demands
 hud.msg.career=Career: %s
 
-hud.ic2.msg.stored=Stored
+hud.ic2.msg.storedenergy=Energy
+hud.ic2.msg.storedfuel=Fuel
+hud.ic2.msg.mode=Mode
+hud.ic2.msg.modestepup=Step-up
+hud.ic2.msg.modestepdown=Step-down
 hud.ic2.msg.input=Input
 hud.ic2.msg.output=Output
 hud.ic2.msg.tier=Tier

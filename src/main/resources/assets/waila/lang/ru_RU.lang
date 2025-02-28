@@ -65,9 +65,13 @@ hud.msg.offers=Предложения
 hud.msg.demands=Запросы
 hud.msg.career=Карьера: %s
 
-hud.ic2.msg.stored=Хранится
-hud.ic2.msg.input=Вход
-hud.ic2.msg.output=Выход
+hud.ic2.msg.storedenergy=Энергия
+hud.ic2.msg.storedfuel=Топливо
+hud.ic2.msg.mode=Режим
+hud.ic2.msg.modestepup=Повышение
+hud.ic2.msg.modestepdown=Понижение
+hud.ic2.msg.input=Макс. Вход
+hud.ic2.msg.output=Макс. Выход
 hud.ic2.msg.tier=Энергоуровень
 
 hud.ic2.msg.unknown=Неизвестный посев
