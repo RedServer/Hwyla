@@ -1,6 +1,6 @@
 package mcp.mobius.waila.addons.ic2;
 
-import mcp.mobius.waila.Waila;
+import mcp.mobius.waila.addons.core.BaseModule;
 import mcp.mobius.waila.api.IWailaPlugin;
 import mcp.mobius.waila.api.IWailaRegistrar;
 import mcp.mobius.waila.api.WailaPlugin;
@@ -8,19 +8,10 @@ import net.minecraftforge.fml.common.Loader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
-
 @WailaPlugin
-public class IC2Module implements IWailaPlugin {
+public class IC2Module extends BaseModule implements IWailaPlugin {
 
     private static final Logger LOGGER = LogManager.getLogger();
-    private static final Map<String, Class<?>> classes = new HashMap<>();
-    private static final Map<String, Field> fields = new HashMap<>();
-    private static final Map<String, Method> methods = new HashMap<>();
-
 
     private IWailaRegistrar registrar;
 
@@ -162,52 +153,5 @@ public class IC2Module implements IWailaPlugin {
         this.registrar.addConfig("Industrial Craft 2", "ic2.tier", true);
         this.registrar.addConfig("IC2 Crops", "ic2.crops", true);
         this.registrar.addConfig("IC2 Crops", "ic2.crops.sneakshow", true);
-    }
-
-
-    private void registerClass(String className) throws Exception {
-        if (classes.containsKey(className)) return;
-        Class<?> clazz = Class.forName(className);
-        classes.put(clazz.getSimpleName(), clazz);
-    }
-
-    private void registerField(String className, String fieldName) throws Exception {
-        if (fields.containsKey(className + "." + fieldName)) return;
-        Class<?> clazz = classes.get(className);
-        Field field = clazz.getField(fieldName);
-        fields.put(clazz.getSimpleName() + "." + fieldName, field);
-    }
-
-    private void registerMethod(String className, String methodName, Class<?>... parameterTypes) throws Exception {
-        if (methods.containsKey("className" + "." + methodName)) return;
-        Class<?> clazz = classes.get(className);
-        Method method = clazz.getMethod(methodName, parameterTypes);
-        methods.put(clazz.getSimpleName() + "." + methodName, method);
-    }
-
-    protected static Object invokeMethod(String methodKey, Object instance, Object... args) throws Exception {
-        Method method = methods.get(methodKey);
-        if (method == null) {
-            throw new IllegalArgumentException("Method " + methodKey + " is not registered.");
-        }
-
-        return method.invoke(instance, args);
-    }
-
-    protected static Object getField(String fieldKey, Object instance) throws Exception {
-        Field field = fields.get(fieldKey);
-        if (field == null) {
-            throw new IllegalArgumentException("Field " + fieldKey + " is not registered.");
-        }
-
-        return field.get(instance);
-    }
-
-    protected static Class<?> getClass(String className) {
-        Class<?> clazz = classes.get(className);
-        if (clazz == null) {
-            throw new IllegalArgumentException("Class " + className + " is not registered.");
-        }
-        return clazz;
     }
 }

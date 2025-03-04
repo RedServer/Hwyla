@@ -1,6 +1,7 @@
 package mcp.mobius.waila.addons.thermalexpansion;
 
 import mcp.mobius.waila.Waila;
+import mcp.mobius.waila.addons.core.BaseModule;
 import mcp.mobius.waila.api.IWailaPlugin;
 import mcp.mobius.waila.api.IWailaRegistrar;
 import mcp.mobius.waila.api.WailaPlugin;
@@ -10,27 +11,21 @@ import net.minecraftforge.fml.common.Loader;
 import java.lang.reflect.Method;
 
 @WailaPlugin
-public class ThermalExpansionModule implements IWailaPlugin {
+public class ThermalExpansionModule extends BaseModule implements IWailaPlugin {
 
-    public static Class cofhItemHelper = null;
-    public static Method readItemStackFromNBT = null;
-
-    public static Class tileCache = null;
-    public static Method tileCacheGetStored = null;
 
     public void register(IWailaRegistrar registrar) {
         if (!Loader.isModLoaded("thermalexpansion") || !Loader.isModLoaded("cofhcore")) return;
         try {
-            cofhItemHelper = Class.forName("cofh.core.util.helpers.ItemHelper");
-            readItemStackFromNBT = cofhItemHelper.getMethod("readItemStackFromNBT", NBTTagCompound.class);
+            registerClass("cofh.core.util.helpers.ItemHelper");
+            registerClass("cofh.thermalexpansion.block.storage.TileCache");
+            registerMethod("ItemHelper", "readItemStackFromNBT", NBTTagCompound.class);
+            registerMethod("TileCache", "getStoredCount");
 
 
-            tileCache = Class.forName("cofh.thermalexpansion.block.storage.TileCache");
-            tileCacheGetStored = tileCache.getDeclaredMethod("getStoredCount");
-
-            registrar.registerHeadProvider(HUDHandlerCache.INSTANCE, tileCache);
-            registrar.registerBodyProvider(HUDHandlerCache.INSTANCE, tileCache);
-            registrar.registerNBTProvider(HUDHandlerCache.INSTANCE, tileCache);
+            registrar.registerHeadProvider(HUDHandlerCache.INSTANCE, getClass("TileCache"));
+            registrar.registerBodyProvider(HUDHandlerCache.INSTANCE, getClass("TileCache"));
+            registrar.registerNBTProvider(HUDHandlerCache.INSTANCE, getClass("TileCache"));
 
             registrar.addConfig("Thermal Expansion", "thermalexpansion.cache");
         } catch (Exception e) {

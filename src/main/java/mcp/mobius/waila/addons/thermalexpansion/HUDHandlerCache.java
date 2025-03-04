@@ -31,7 +31,7 @@ public class HUDHandlerCache implements IWailaDataProvider {
             TileEntity te = accessor.getTileEntity();
             NBTTagCompound tag = accessor.getNBTData();
             if (accessor.getNBTData().hasKey("Item"))
-                storedItem = (ItemStack) ThermalExpansionModule.readItemStackFromNBT.invoke(te, tag.getCompoundTag("Item"));
+                storedItem = (ItemStack) ThermalExpansionModule.invokeMethod("ItemHelper.readItemStackFromNBT", te, tag.getCompoundTag("Item"));
 
 
             String name = currenttip.get(0);
@@ -65,7 +65,7 @@ public class HUDHandlerCache implements IWailaDataProvider {
 
             ItemStack storedItem = null;
             if (tag.hasKey("Item")) {
-                storedItem = (ItemStack) ThermalExpansionModule.readItemStackFromNBT.invoke(te, tag.getCompoundTag("Item"));
+                storedItem = (ItemStack) ThermalExpansionModule.invokeMethod("ItemHelper.readItemStackFromNBT", te, tag.getCompoundTag("Item"));
             }
 
             int stored = 0;
@@ -75,9 +75,8 @@ public class HUDHandlerCache implements IWailaDataProvider {
 
             if (storedItem != null) {
                 currenttip.add(storedStr + ": " + stored);
-//            currenttip.add("Stored: " + stored + "/" + maxStored); //TODO: add maxStored value
             } else currenttip.add(capacityStr + ": " + maxStored);
-        } catch (ReflectiveOperationException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -91,9 +90,8 @@ public class HUDHandlerCache implements IWailaDataProvider {
         if (te != null) te.writeToNBT(tag);
 
         try {
-            tag.setInteger("MaxStored", 0); //TODO: add maxStored value
-            tag.setInteger("Stored", (Integer) ThermalExpansionModule.tileCacheGetStored.invoke(te));
-        } catch (ReflectiveOperationException e) {
+            tag.setInteger("Stored", (Integer) ThermalExpansionModule.invokeMethod("TileCache.getStoredCount",te));
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return tag;
