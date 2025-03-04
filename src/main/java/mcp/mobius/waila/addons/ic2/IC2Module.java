@@ -22,6 +22,7 @@ public class IC2Module extends BaseModule implements IWailaPlugin {
 
         registerCrops();
         registerGenerator();
+        registerSolarGenerator();
         registerEUStorage();
         registerTransformer();
         registerMachines();
@@ -42,13 +43,13 @@ public class IC2Module extends BaseModule implements IWailaPlugin {
 
             registerMethod("LocaleComp", "getLocalized");
 
-            registerMethod("CropCard", "getGrowthDuration", classes.get("ICropTile"));
-            registerMethod("CropCard", "getSeeds", classes.get("ICropTile"));
+            registerMethod("CropCard", "getGrowthDuration", getClass("ICropTile"));
+            registerMethod("CropCard", "getSeeds", getClass("ICropTile"));
             registerMethod("CropCard", "getMaxSize");
 
             registerField("Ic2Crops", "instance");
-            registerMethod("Ic2Crops", "getCropName", classes.get("CropCard"));
-            registerMethod("Ic2Crops", "getDisplayItem", classes.get("CropCard"));
+            registerMethod("Ic2Crops", "getCropName", getClass("CropCard"));
+            registerMethod("Ic2Crops", "getDisplayItem", getClass("CropCard"));
 
             registerMethod(baseClassName, "getCrop");
             registerMethod(baseClassName, "getScanLevel");
@@ -65,10 +66,10 @@ public class IC2Module extends BaseModule implements IWailaPlugin {
             registerMethod(baseClassName, "getStatGain");
             registerMethod(baseClassName, "getStatResistance");
 
-            this.registrar.registerStackProvider(HUDHandlerCrops.INSTANCE, classes.get(baseClassName));
-            this.registrar.registerHeadProvider(HUDHandlerCrops.INSTANCE, classes.get(baseClassName));
-            this.registrar.registerBodyProvider(HUDHandlerCrops.INSTANCE, classes.get(baseClassName));
-            this.registrar.registerNBTProvider(HUDHandlerCrops.INSTANCE, classes.get(baseClassName));
+            this.registrar.registerStackProvider(HUDHandlerCrops.INSTANCE, getClass(baseClassName));
+            this.registrar.registerHeadProvider(HUDHandlerCrops.INSTANCE, getClass(baseClassName));
+            this.registrar.registerBodyProvider(HUDHandlerCrops.INSTANCE, getClass(baseClassName));
+            this.registrar.registerNBTProvider(HUDHandlerCrops.INSTANCE, getClass(baseClassName));
         } catch (Exception e) {
             LOGGER.error("[IC2] Error while loading Crops hooks.", e);
         }
@@ -87,12 +88,29 @@ public class IC2Module extends BaseModule implements IWailaPlugin {
             registerMethod(className, "getFuel");
             registerMethod(className, "getMaxFuel");
 
-            this.registrar.registerBodyProvider(HUDHandlerGenerators.INSTANCE, classes.get(className));
-            this.registrar.registerNBTProvider(HUDHandlerGenerators.INSTANCE, classes.get(className));
+            this.registrar.registerBodyProvider(HUDHandlerGenerators.INSTANCE, getClass(className));
+            this.registrar.registerNBTProvider(HUDHandlerGenerators.INSTANCE, getClass(className));
         } catch (Exception e) {
-            LOGGER.error("[IC2] Error while loading crops hooks.", e);
+            LOGGER.error("[IC2] Error while loading Generator hooks.", e);
         }
     }
+
+
+    private void registerSolarGenerator() {
+        String packageName = "ic2.core.block.generator.tile";
+        String className = "TileEntitySolarPanel";
+        try {
+            registerClass(packageName + "." + className);
+            registerMethod(className, "getOutput");
+            registerMethod(className, "getSourceTier");
+
+            this.registrar.registerBodyProvider(HUDHandlerSolarGenerators.INSTANCE, getClass(className));
+            this.registrar.registerNBTProvider(HUDHandlerSolarGenerators.INSTANCE, getClass(className));
+        } catch (Exception e) {
+            LOGGER.error("[IC2] Error while loading Solar Generator hooks.", e);
+        }
+    }
+
 
     private void registerEUStorage() {
         String packageName = "ic2.core.block.base.tile";
@@ -104,8 +122,8 @@ public class IC2Module extends BaseModule implements IWailaPlugin {
             registerMethod(className, "getOutput");
             registerMethod(className, "getTier");
 
-            this.registrar.registerBodyProvider(HUDHandlerEUStorages.INSTANCE, classes.get(className));
-            this.registrar.registerNBTProvider(HUDHandlerEUStorages.INSTANCE, classes.get(className));
+            this.registrar.registerBodyProvider(HUDHandlerEUStorages.INSTANCE, getClass(className));
+            this.registrar.registerNBTProvider(HUDHandlerEUStorages.INSTANCE, getClass(className));
 
         } catch (Exception e) {
             LOGGER.error("[IC2] Error while loading EU Storage hooks.", e);
@@ -122,8 +140,8 @@ public class IC2Module extends BaseModule implements IWailaPlugin {
             registerMethod(className, "getActive");
             registerMethod(className, "getSinkTier");
             registerMethod(className, "getSourceTier");
-            this.registrar.registerBodyProvider(HUDHandlerTransformers.INSTANCE, classes.get(className));
-            this.registrar.registerNBTProvider(HUDHandlerTransformers.INSTANCE, classes.get(className));
+            this.registrar.registerBodyProvider(HUDHandlerTransformers.INSTANCE, getClass(className));
+            this.registrar.registerNBTProvider(HUDHandlerTransformers.INSTANCE, getClass(className));
         } catch (Exception e) {
             LOGGER.error("[IC2] Error while loading Transformer hooks.", e);
         }
@@ -138,8 +156,8 @@ public class IC2Module extends BaseModule implements IWailaPlugin {
             registerField(className, "maxInput");
             registerMethod(className, "getMaxEU");
             registerMethod(className, "getStoredEU");
-            this.registrar.registerBodyProvider(HUDHandlerMachines.INSTANCE, classes.get(className));
-            this.registrar.registerNBTProvider(HUDHandlerMachines.INSTANCE, classes.get(className));
+            this.registrar.registerBodyProvider(HUDHandlerMachines.INSTANCE, getClass(className));
+            this.registrar.registerNBTProvider(HUDHandlerMachines.INSTANCE, getClass(className));
         } catch (Exception e) {
             LOGGER.error("[IC2] Error while loading Machines hooks.", e);
         }
